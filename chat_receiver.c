@@ -18,10 +18,10 @@ int main(int argc, char* argv[]) {
     }
     // Parse command line arguments
     char* multicast_ip = argv[1];
-    int port = atoi(argv[2]);
+    int port = atoi(argv[2]);  /// atoi  = text to number 
 
-    // Create UDP socket
-    int sock = socket(AF_INET, SOCK_DGRAM, 0);
+    // Create TCP socket
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
         perror("socket");
         exit(1);
