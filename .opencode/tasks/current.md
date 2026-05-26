@@ -8,9 +8,7 @@
 - [ ] 0.1  *header defined by user*
 - [ ] 0.2  `ListCreate` — allocate sentinel list
 - [ ] 0.3  `ListDestroy` — free all nodes + sentinels
-- [ ] 0.2  `ListDestroy` — free all nodes + sentinels
-- [ ] 0.3  `ListPushHead` — insert at front
-- [ ] 0.4  `ListPushTail` — insert at back
+- [ ] 0.4  `ListPushHead` — insert at front
 - [ ] 0.5  `ListPopHead` — remove from front
 - [ ] 0.6  `ListPopTail` — remove from back
 - [ ] 0.7  `ListSize` — count elements
