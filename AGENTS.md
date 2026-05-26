@@ -76,19 +76,9 @@ GroupCast/
 └── tests/                             (Pass 2)
 ```
 
-## Pass 2 Upgrades (not started)
-- SHA256 password hashing
-- fork+execvp instead of system()
-- CLI args via getopt
-- Signal handling (SIGINT graceful shutdown)
-- Socket timeouts
-- Unit tests (dlist, hashmap, protocol)
-- .clang-format
-- GitHub CI
-- README with architecture diagram
-- MIT License
-- ncurses TUI (bonus)
-- Multicast encryption (bonus)
+## Pass 2 Upgrades
+Tasks tracked in `.opencode/tasks/current.md` under **Pass 2 — Advanced**.
+Not started yet.
 
 ## Protocol — TLV Format
 - **Type**: 1 byte
