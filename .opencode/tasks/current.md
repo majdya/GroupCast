@@ -8,9 +8,7 @@
 - [ ] 0.1  *header defined by user*
 - [ ] 0.2  `ListCreate` — allocate sentinel list
 - [ ] 0.3  `ListDestroy` — free all nodes + sentinels
-- [ ] 0.2  `ListDestroy` — free all nodes + sentinels
-- [ ] 0.3  `ListPushHead` — insert at front
-- [ ] 0.4  `ListPushTail` — insert at back
+- [ ] 0.4  `ListPushHead` — insert at front
 - [ ] 0.5  `ListPopHead` — remove from front
 - [ ] 0.6  `ListPopTail` — remove from back
 - [ ] 0.7  `ListSize` — count elements
@@ -62,3 +60,34 @@
 - [ ] 4.1  `src/chat_send.c` — UDP multicast sender
 - [ ] 4.2  `src/chat_recv.c` — UDP multicast receiver
 - [ ] 4.3  Client integration — spawn gnome-terminal, mqueue PID, kill on leave
+
+---
+
+## Pass 2 — Advanced (portfolio polish)
+
+### Security
+- [ ] P2.1  SHA256 password hashing via libcrypt
+- [ ] P2.2  fork+execvp instead of system() for chat windows
+
+### CLI & Config
+- [ ] P2.3  getopt for server: `-p <port> -m <mc_range>`
+- [ ] P2.4  getopt for client: `-a <addr> -p <port>`
+
+### Robustness
+- [ ] P2.5  Signal handling (SIGINT graceful shutdown)
+- [ ] P2.6  Socket timeouts (SO_RCVTIMEO)
+
+### Testing
+- [ ] P2.7  tests/test_dlist.c
+- [ ] P2.8  tests/test_hashmap.c
+- [ ] P2.9  tests/test_protocol.c
+
+### Polish
+- [ ] P2.10 .clang-format
+- [ ] P2.11 .github/workflows/ci.yml
+- [ ] P2.12 README.md with architecture diagram + usage
+- [ ] P2.13 LICENSE (MIT)
+
+### Bonus
+- [ ] P2.14 ncurses TUI
+- [ ] P2.15 Multicast message encryption

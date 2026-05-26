@@ -1,5 +1,5 @@
-#ifndef __NEW_GEN_DLIST_H__
-#define __NEW_GEN_DLIST_H__
+#ifndef __GEN_DLIST_H__
+#define __GEN_DLIST_H__
 
 
 #include <stddef.h>  /* size_t */
@@ -57,7 +57,7 @@ ListItr ListPushHead(List* _list, void* _item);
 ListItr ListPushTail(List* _list, void* _item);
 
 /** @brief Remove element from list's head
- *  @details if successfull, return a pointer to the removed item 
+ *  @details if successful, return a pointer to the removed item 
  *  time complexity O(1).
  *
  * @params _list : A previously created List ADT returned via ListCreate
@@ -66,7 +66,7 @@ ListItr ListPushTail(List* _list, void* _item);
 void* ListPopHead(List* _list);
 
 /** @brief Remove element from list's tail
- *  @details if successfull, return a pointer to the removed item 
+ *  @details if successful, return a pointer to the removed item 
  *  time complexity O(1).
  *
  * @params _list : A previously created List ADT returned via ListCreate
@@ -75,31 +75,31 @@ void* ListPopHead(List* _list);
 void* ListPopTail(List* _list);
 
 /** 
- * @brief Get itertator to the list's beginning
+ *  @brief Get iterator to the list's beginning
  *
- * @params _list : list to return begin iterator, pointing at first element
+ *  @params _list : list to return begin iterator, pointing at first element
  *                 or at the end if list is empty
- * @return iterator pointing at the list's beginning
+ *  @return iterator pointing at the list's beginning
  */
 ListItr ListItrBegin(const List* _list);
 
 /** 
- * @brief Get itertator to the list end
+ *  @brief Get iterator to the list end
  *
- * @params _list : list to return end iterator
- * @return an iterator pointing at the list's end
+ *  @params _list : list to return end iterator
+ *  @return an iterator pointing at the list's end
  */
 ListItr ListItrEnd(const List* _list);
 
 /** 
- * @brief Get itertator to the next element from a given iterator
- * @warning if _itr is end iterator it will be returned
+ *  @brief Get iterator to the next element from a given iterator
+ *  @warning if _itr is end iterator it will be returned
  */
 ListItr ListItrNext(ListItr _itr);
 
 /** 
- * @brief Get itertator to the previous element
- * @warning if _itr is begin iterator it will be returned
+ *  @brief Get iterator to the previous element
+ *  @warning if _itr is begin iterator it will be returned
  */
 ListItr ListItrPrev(ListItr _itr);
 
@@ -139,12 +139,12 @@ void* ListItrRemove(ListItr _itr);
 size_t ListSize(const List* _list);
 
 /**
- * @brief Check if a given list is empty
- * @param[in] _list - The list to check
- * @return size_t - return none zero if empty
+ *  @brief Check if a given list is empty
+ *  @param[in] _list - The list to check
+ *  @return int - return non-zero if empty
  *
  */
-size_t ListIsEmpty(List* _list);
+int ListIsEmpty(const List* _list);
 
 /** 
  * @brief execute an action for all elements in a half open range
@@ -155,9 +155,9 @@ size_t ListIsEmpty(List* _list);
  * @param _end : A list iterator to end operations on
  * @param _Action : user provided action function
  * @param _context : Parameters for the function
- * @return ListItr to the element where the iteration stoped. this might be end iterator
+ * @return ListItr to the element where the iteration stopped. this might be end iterator
  */
 ListItr ListItrForEach(ListItr _begin, ListItr _end, ListActionFunction _action, void* _context);
 
 
-#endif /* __NEW_GEN_DLIST_H__ */
+#endif /* __GEN_DLIST_H__ */
