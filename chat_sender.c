@@ -7,44 +7,50 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-// This program sends chat messages to a multicast group.
-// Usage: chat_sender <multicast_ip> <port> <username>
-// Example: chat_sender 239.0.0.1 12345 Alice
+// This program sends chat messages to a TCP server.
+// Usage: chat_sender <server_ip> <port> <username>
+// Example: chat_sender 127.0.0.1 12345 Alice
 
 int main(int argc, char* argv[]) {
     if (argc != 4) {
-        printf("Usage: %s <multicast_ip> <port> <username>\n", argv[0]);
+        printf("Usage: %s <server_ip> <port> <username>\n", argv[0]);
         return 1;
     }
     // Parse command line arguments
-    char* multicast_ip = argv[1];
+    char* server_ip = argv[1];
     int port = atoi(argv[2]);
     char* username = argv[3];
 
-    // Create UDP socket
-    int sock = socket(AF_INET, SOCK_DGRAM, 0);
+    // Create TCP socket
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
         perror("socket");
         exit(1);
     }
 
-    // Set up destination address (multicast group)
-    struct sockaddr_in addr;
-    memset(&addr, 0, sizeof(addr));
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = inet_addr(multicast_ip);
-    addr.sin_port = htons(port);
+    // Set up server address
+    struct sockaddr_in serv_addr;
+    memset(&serv_addr, 0, sizeof(serv_addr));
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = inet_addr(server_ip);
+    serv_addr.sin_port = htons(port);
+
+    // Connect to server
+    if (connect(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
+        perror("connect");
+        exit(1);
+    }
+
+    // Send username to server
+    send(sock, username, strlen(username), 0);
 
     char msg[512];
     while (1) {
         // Prompt user for message
         printf("[%s] Enter message: ", username);
         fgets(msg, sizeof(msg), stdin);
-        // Format message as "username: message"
-        char sendbuf[600];
-        snprintf(sendbuf, sizeof(sendbuf), "%s: %s", username, msg);
-        // Send message to multicast group
-        sendto(sock, sendbuf, strlen(sendbuf), 0, (struct sockaddr*)&addr, sizeof(addr));
+        // Send message to server
+        send(sock, msg, strlen(msg), 0);
     }
     // Close socket (unreachable code in this loop)
     close(sock);
