@@ -4,10 +4,13 @@
 Real-time group chat on LAN using **TCP** (management) + **UDP multicast** (messaging).
 University Data Communication course project. C language.
 
-## Current State
-- **Phase**: Pre-implementation (planning complete)
-- **Modules implemented**: None
-- **Files existing**: `ds/gen_dlist.h`, `ds/hash_map.h`, `docs/*.pdf`
+## Current Focus
+- **Phase**: 0 (Data Structures Library)
+- **Pass**: 1 (Base — working MVP)
+- **Active files**: `ds/gen_dlist.c`, `ds/hash_map.c`
+- **Next action**: Implement `ListCreate` + `ListDestroy`
+- **Blockers**: None
+- **Known issues**: None
 
 ## Architecture
 
@@ -26,17 +29,6 @@ Screen 2 (Create/Join/Leave/Logout)    ├── Comm_Accept()
        ▼
   TCP socket
 ```
-
-## Key Design Decisions
-| Decision | Rationale |
-|----------|-----------|
-| `select()` event loop | Single-threaded, no locks, sufficient for LAN scale |
-| TLV framing on TCP | Length prefix solves TCP stream boundary problem |
-| Comm-Link abstraction layer | Isolates networking from business logic; matches block diagram |
-| HashMap + List (ds/) | Mandated by project spec |
-| gnome-terminal via system() (Base) | Per spec; upgrade to fork+exec in Advanced pass |
-| POSIX message queues | IPC for PID passing between client and chat windows |
-| Multicast: 239.255.0.0/24 | Administratively scoped, LAN-only |
 
 ## Team
 - **Dev A**: Server (Phase 2) + shared infrastructure
@@ -143,3 +135,17 @@ struct List { Node m_head; Node m_tail; };  // sentinel nodes
 
 ### ds/hash_map.h — HashMap
 Separate chaining using linked lists. Bucket count rounded to nearest prime.
+
+## Decision Log
+
+| Date | Decision | Rationale |
+|------|----------|-----------|
+| 2026-05-26 | `select()` event loop over threads | Single-threaded, no locks, sufficient for LAN scale |
+| 2026-05-26 | Comm-Link abstraction layer | Isolates networking from business logic; matches block diagram |
+| 2026-05-26 | TLV framing on TCP | Length prefix solves TCP stream boundary problem |
+| 2026-05-26 | HashMap + List from project spec | Mandated; generic C containers show data structure competency |
+| 2026-05-26 | Two-pass strategy (Base → Advanced) | Working demo first, then polish for portfolio |
+| 2026-05-26 | `system()` gnome-terminal in Base | Per spec; upgrade to `fork+execvp` in Advanced |
+| 2026-05-26 | POSIX message queues for IPC | Standard Linux IPC; PID passing between processes |
+| 2026-05-26 | Multicast range 239.255.0.0/24 | Administratively scoped, LAN-only, no upstream leakage |
+| 2026-05-26 | AGENTS.md + .opencode/tasks/ for context | Persistent project memory across sessions; auto-loaded on opencode start |

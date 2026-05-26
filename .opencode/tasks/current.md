@@ -1,9 +1,13 @@
 # Current Sprint — Phase 0: Data Structures Library
 
+**🔜 Next: 0.2 ListCreate + 0.3 ListDestroy**
+
 ## Phase 0 — ds/ implementation
 
 ### gen_dlist.c — Core Operations
-- [ ] 0.1  `ListCreate` — allocate sentinel list
+- [ ] 0.1  *header defined by user*
+- [ ] 0.2  `ListCreate` — allocate sentinel list
+- [ ] 0.3  `ListDestroy` — free all nodes + sentinels
 - [ ] 0.2  `ListDestroy` — free all nodes + sentinels
 - [ ] 0.3  `ListPushHead` — insert at front
 - [ ] 0.4  `ListPushTail` — insert at back
