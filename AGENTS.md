@@ -7,8 +7,8 @@ University Data Communication course project. C language.
 ## Current Focus
 - **Phase**: 0 (Data Structures Library)
 - **Pass**: 1 (Base — working MVP)
-- **Active files**: `ds/gen_dlist.c`, `ds/hash_map.c`
-- **Next action**: Implement `ListCreate` + `ListDestroy`
+- **Active files**: `ds/gen_dlist.c`, `ds/hash_map.c`, `tests/test_dlist.c`, `tests/test_hashmap.c`
+- **Next action**: Implement `src/types.h` + `src/protocol.h` (Phase 1)
 - **Blockers**: None
 - **Known issues**: None
 
@@ -73,17 +73,19 @@ GroupCast/
 │   ├── ui.h / ui.c                    (Phase 3)
 │   ├── chat_send.c                    (Phase 4)
 │   └── chat_recv.c                    (Phase 4)
-└── tests/                             (Pass 2)
+├── tests/                             (Pass 2)
+└── docs/
+    ├── www/index.html                  (Project documentation)
 ```
 
 ## Pass 2 Upgrades
 Tasks tracked in `.opencode/tasks/current.md` under **Pass 2 — Advanced**.
 Not started yet.
 
-## Protocol — TLV Format
-- **Type**: 1 byte
-- **Length**: 2 bytes (network byte order)
-- **Value**: N bytes
+## Protocol — TLV Format (b,b,B)
+- **Type**: 1 byte (`uint8_t`, max 255 message types)
+- **Length**: 1 byte (`uint8_t`, max payload 255)
+- **Value**: N bytes (N ≤ `TLV_MAX_PAYLOAD` = 255)
 
 ### Message Types
 | Code | Name | Description |
@@ -132,10 +134,11 @@ Separate chaining using linked lists. Bucket count rounded to nearest prime.
 |------|----------|-----------|
 | 2026-05-26 | `select()` event loop over threads | Single-threaded, no locks, sufficient for LAN scale |
 | 2026-05-26 | Comm-Link abstraction layer | Isolates networking from business logic; matches block diagram |
-| 2026-05-26 | TLV framing on TCP | Length prefix solves TCP stream boundary problem |
+| 2026-05-26 | TLV framing (b,b,B) on TCP | 1B Type, 1B Length, 255B max payload — per instructor spec |
 | 2026-05-26 | HashMap + List from project spec | Mandated; generic C containers show data structure competency |
 | 2026-05-26 | Two-pass strategy (Base → Advanced) | Working demo first, then polish for portfolio |
 | 2026-05-26 | `system()` gnome-terminal in Base | Per spec; upgrade to `fork+execvp` in Advanced |
 | 2026-05-26 | POSIX message queues for IPC | Standard Linux IPC; PID passing between processes |
 | 2026-05-26 | Multicast range 239.255.0.0/24 | Administratively scoped, LAN-only, no upstream leakage |
 | 2026-05-26 | AGENTS.md + .opencode/tasks/ for context | Persistent project memory across sessions; auto-loaded on opencode start |
+| 2026-05-27 | Phase 0 complete | gen_dlist.c + hash_map.c implemented, 46 tests passing |

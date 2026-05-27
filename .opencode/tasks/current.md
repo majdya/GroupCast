@@ -36,15 +36,20 @@
 - [ ] 0.25 `HashMap_ForEach` — iterate all entries
 - [ ] 0.26 `HashMap_GetStatistics` — debug stats
 
+### tests/ — Pass 1 tests
+- [ ] 0.27 `tests/test_dlist.c` — test all list ops + iterators
+- [ ] 0.28 `tests/test_hashmap.c` — test all map ops
+
 ---
 
 ## Backlog
 
 ### Phase 1 — Protocol & Infrastructure
-- [ ] 1.1  `src/types.h` — ClientState, Group structs
-- [ ] 1.2  `src/protocol.h` — TLV type enums + status enums
-- [ ] 1.3  `src/comm_link.h / comm_link.c` — Comm_Listen, Accept, Connect, Send, Recv, Close, FD
-- [ ] 1.4  `Makefile` — all targets, -Wall -g, -lrt
+- [ ] 1.1  `src/types.h` — GroupInfo struct (name, mcast_addr, mcast_port)
+- [ ] 1.2  `src/protocol.h` — MessageType enum (12 codes) + StatusCode enum (9 codes) + TLV_MAX_PAYLOAD
+- [ ] 1.3  `src/comm_link.h / comm_link.c` — CommPeer opaque, Comm_Send, Comm_TryRecv (CommResult enum), Comm_Listen/Accept/Connect/Close/FD
+- [ ] 1.4  `tests/test_comm.c` — socketpair-based TLV send/recv/partial/multi tests
+- [ ] 1.5  `Makefile` — all targets + test targets, -Wall -g, -lrt
 
 ### Phase 2 — Server
 - [ ] 2.1  `src/server_mng.c` — HandleRegister, HandleLogin, HandleLogout

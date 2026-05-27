@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GroupCast — Documentation</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a2e;
+    --accent: #4361ee;
+    --accent2: #3f37c9;
+    --border: #e0e0e0;
+    --code-bg: #f4f4f8;
+    --code-fg: #2d2d2d;
+    --table-alt: #f8f9ff;
+    --success: #2ecc71;
+    --warn: #f39c12;
+  }
+  .dark {
+    --bg: #0f0f23;
+    --fg: #e0e0e0;
+    --accent: #5e7ce2;
+    --accent2: #7b9cff;
+    --border: #2a2a4a;
+    --code-bg: #1a1a2e;
+    --code-fg: #c0caf5;
+    --table-alt: #16162e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg); color: var(--fg); line-height: 1.6;
+    transition: background 0.3s, color 0.3s;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff; padding: 48px 0 40px;
+  }
+  header h1 { font-size: 2.5em; margin-bottom: 4px; letter-spacing: -0.5px; }
+  header p { opacity: 0.85; font-size: 1.1em; }
+  header .meta { margin-top: 12px; font-size: 0.85em; opacity: 0.7; }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 8px 0;
+  }
+  nav .container { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  nav a { color: var(--accent); text-decoration: none; font-size: 0.9em; padding: 4px 12px; border-radius: 4px; }
+  nav a:hover { background: var(--code-bg); }
+  #theme-toggle {
+    margin-left: auto; background: none; border: 1px solid var(--border);
+    color: var(--fg); padding: 4px 12px; border-radius: 4px; cursor: pointer;
+    font-size: 0.85em;
+  }
+  #theme-toggle:hover { background: var(--code-bg); }
+
+  /* Sections */
+  section { padding: 32px 0; border-bottom: 1px solid var(--border); }
+  section:last-child { border-bottom: none; }
+  h2 { font-size: 1.5em; margin-bottom: 16px; color: var(--accent); }
+  h3 { font-size: 1.15em; margin: 20px 0 10px; }
+
+  /* Cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin: 16px 0; }
+  .card {
+    border: 1px solid var(--border); border-radius: 8px; padding: 16px;
+    transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .card h4 { font-size: 1em; margin-bottom: 6px; }
+  .card p { font-size: 0.88em; opacity: 0.8; }
+  .card .tag {
+    display: inline-block; font-size: 0.75em; padding: 2px 8px;
+    border-radius: 10px; margin-top: 8px;
+  }
+  .tag-done { background: #d4edda; color: #155724; }
+  .tag-todo { background: #fff3cd; color: #856404; }
+  .tag-next { background: #cce5ff; color: #004085; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.92em; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { font-weight: 600; color: var(--accent); }
+  tr:nth-child(even) td { background: var(--table-alt); }
+
+  /* Code */
+  code {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    background: var(--code-bg); color: var(--code-fg);
+    padding: 2px 6px; border-radius: 3px; font-size: 0.88em;
+  }
+  pre {
+    background: var(--code-bg); color: var(--code-fg);
+    padding: 16px; border-radius: 8px; overflow-x: auto;
+    font-size: 0.88em; line-height: 1.5; margin: 12px 0;
+  }
+  pre .comment { color: #6c757d; font-style: italic; }
+  pre .keyword { color: #7c3aed; }
+  pre .string { color: #059669; }
+  pre .type { color: #2563eb; }
+
+  /* Architecture diagram */
+  .arch {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.82em; line-height: 1.5; white-space: pre;
+    background: var(--code-bg); padding: 20px; border-radius: 8px;
+    overflow-x: auto; margin: 12px 0;
+  }
+
+  /* TLV simulator */
+  #tlv-sim { margin: 16px 0; }
+  #tlv-sim select, #tlv-sim input {
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg); color: var(--fg); font-size: 0.9em; margin: 4px;
+  }
+  #tlv-sim input[type="text"] { width: 200px; }
+  #tlv-output {
+    margin-top: 12px; padding: 12px 16px;
+    background: var(--code-bg); border-radius: 6px;
+    font-family: monospace; font-size: 0.9em;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center; padding: 24px; font-size: 0.85em; opacity: 0.6;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    header { padding: 32px 0 24px; }
+    header h1 { font-size: 1.8em; }
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>GroupCast</h1>
+    <p>Real-time group chat on LAN &mdash; TCP management + UDP multicast messaging</p>
+    <div class="meta">Data Communication course project &middot; C language &middot; Pass 1 (Base MVP)</div>
+  </div>
+</header>
+
+<nav>
+  <div class="container">
+    <a href="#overview">Overview</a>
+    <a href="#arch">Architecture</a>
+    <a href="#protocol">Protocol</a>
+    <a href="#modules">Module Map</a>
+    <a href="#build">Build &amp; Test</a>
+    <a href="#demo">Demo Flow</a>
+    <a href="#team">Team</a>
+    <button id="theme-toggle" onclick="toggleTheme()">🌙 Dark</button>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- Overview -->
+<section id="overview">
+  <h2>Overview</h2>
+  <p>GroupCast is a real-time group chat application for LAN environments. It uses <strong>TCP</strong> for all management operations (registration, login, group management) and <strong>UDP multicast</strong> for actual chat message delivery.</p>
+  <p>Built for a university Data Communication course, it demonstrates practical networking concepts including socket programming, protocol design, and multicast communication.</p>
+  <div class="cards" style="margin-top:16px">
+    <div class="card">
+      <h4>TCP Management</h4>
+      <p>Client-server communication for registration, login, and group lifecycle management.</p>
+    </div>
+    <div class="card">
+      <h4>UDP Multicast</h4>
+      <p>Efficient group message delivery using IP multicast &mdash; one send reaches all group members.</p>
+    </div>
+    <div class="card">
+      <h4>TLV Protocol</h4>
+      <p>Custom binary protocol (<b>b,b,B</b>) for all management messages: 1B Type, 1B Length, 255B max payload.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Architecture -->
+<section id="arch">
+  <h2>Architecture</h2>
+  <div class="arch">CLIENT                                SERVER
+──────                                ──────
+Screen 1 (Register/Login/Exit)        select() loop
+Screen 2 (Create/Join/Leave/Logout)    ├── Comm_Accept()
+       │                                ├── Comm_TryRecv() → dispatch:
+       ▼                                    ├── ServerMng (User Hash)
+  ClientMng                                   │   register / login / logout
+       │                                      └── GroupMng (Group Hash)
+       ▼                                          create / join / leave / free MC IP
+  Comm-Link (TLV framing)
+       │
+       ▼
+  TCP socket</div>
+  <p>The server uses a single-threaded <code>select()</code> event loop &mdash; no threads, no locks. The <code>Comm-Link</code> layer abstracts TCP framing behind a clean API, keeping business logic (ServerMng, GroupMng) network-agnostic.</p>
+  <h3>Key Design Decisions</h3>
+  <table>
+    <tr><th>Decision</th><th>Rationale</th></tr>
+    <tr><td><code>select()</code> event loop</td><td>Single-threaded, no locks, sufficient for LAN scale</td></tr>
+    <tr><td>Comm-Link abstraction</td><td>Isolates networking from business logic</td></tr>
+    <tr><td>HashMap + List (ds/)</td><td>Mandated by project spec</td></tr>
+    <tr><td>Two-pass strategy</td><td>Working demo first (Pass 1), then portfolio polish (Pass 2)</td></tr>
+    <tr><td><code>system()</code> gnome-terminal</td><td>Per spec in Base; upgrade to <code>fork+execvp</code> in Advanced</td></tr>
+    <tr><td>Multicast 239.255.0.0/24</td><td>Administratively scoped, LAN-only</td></tr>
+  </table>
+</section>
+
+<!-- Protocol -->
+<section id="protocol">
+  <h2>Protocol Specification</h2>
+
+  <h3>TLV Format (b,b,B)</h3>
+  <table>
+    <tr><th>Field</th><th>Size</th><th>Max</th></tr>
+    <tr><td>Type</td><td>1 byte</td><td>255 message types</td></tr>
+    <tr><td>Length</td><td>1 byte</td><td>255 (payload size)</td></tr>
+    <tr><td>Value</td><td>N bytes</td><td>255 max</td></tr>
+  </table>
+
+  <h3>Message Types</h3>
+  <table>
+    <tr><th>Code</th><th>Name</th><th>Description</th><th>Payload</th></tr>
+    <tr><td>0x01</td><td>REGISTER_REQ</td><td>Register new user</td><td>user_len + username + pass_len + password</td></tr>
+    <tr><td>0x02</td><td>REGISTER_RESP</td><td>Registration result</td><td>status</td></tr>
+    <tr><td>0x03</td><td>LOGIN_REQ</td><td>User login</td><td>user_len + username + pass_len + password</td></tr>
+    <tr><td>0x04</td><td>LOGIN_RESP</td><td>Login result</td><td>status</td></tr>
+    <tr><td>0x05</td><td>CREATE_GROUP_REQ</td><td>Create new group</td><td>groupname_len + groupname</td></tr>
+    <tr><td>0x06</td><td>CREATE_GROUP_RESP</td><td>Group creation result</td><td>status + [mcast_addr + mcast_port]</td></tr>
+    <tr><td>0x07</td><td>JOIN_GROUP_REQ</td><td>Join existing group</td><td>groupname_len + groupname</td></tr>
+    <tr><td>0x08</td><td>JOIN_GROUP_RESP</td><td>Join result</td><td>status + [mcast_addr + mcast_port]</td></tr>
+    <tr><td>0x09</td><td>LEAVE_GROUP_REQ</td><td>Leave group</td><td>groupname_len + groupname</td></tr>
+    <tr><td>0x0A</td><td>LEAVE_GROUP_RESP</td><td>Leave result</td><td>status</td></tr>
+    <tr><td>0x0B</td><td>LOGOUT_REQ</td><td>Logout</td><td>empty</td></tr>
+    <tr><td>0x0C</td><td>LOGOUT_RESP</td><td>Logout result</td><td>status</td></tr>
+  </table>
+
+  <h3>Status Codes</h3>
+  <table>
+    <tr><th>Code</th><th>Name</th></tr>
+    <tr><td>0</td><td>SUCCESS</td></tr>
+    <tr><td>1</td><td>ERR_USER_EXISTS</td></tr>
+    <tr><td>2</td><td>ERR_USER_NOT_FOUND</td></tr>
+    <tr><td>3</td><td>ERR_WRONG_PASSWORD</td></tr>
+    <tr><td>4</td><td>ERR_GROUP_EXISTS</td></tr>
+    <tr><td>5</td><td>ERR_GROUP_NOT_FOUND</td></tr>
+    <tr><td>6</td><td>ERR_ALREADY_IN_GROUP</td></tr>
+    <tr><td>7</td><td>ERR_NOT_IN_GROUP</td></tr>
+    <tr><td>8</td><td>ERR_GENERAL</td></tr>
+  </table>
+
+  <h3>TLV Simulator</h3>
+  <p>Select a message type and enter payload data to see the exact bytes on the wire.</p>
+  <div id="tlv-sim">
+    <select id="msg-type">
+      <option value="1">0x01 REGISTER_REQ</option>
+      <option value="2">0x02 REGISTER_RESP</option>
+      <option value="3">0x03 LOGIN_REQ</option>
+      <option value="4">0x04 LOGIN_RESP</option>
+      <option value="5">0x05 CREATE_GROUP_REQ</option>
+      <option value="6">0x06 CREATE_GROUP_RESP</option>
+      <option value="7" selected>0x07 JOIN_GROUP_REQ</option>
+      <option value="8">0x08 JOIN_GROUP_RESP</option>
+      <option value="9">0x09 LEAVE_GROUP_REQ</option>
+      <option value="10">0x0A LEAVE_GROUP_RESP</option>
+      <option value="11">0x0B LOGOUT_REQ</option>
+      <option value="12">0x0C LOGOUT_RESP</option>
+    </select>
+    <input type="text" id="payload-input" placeholder="Payload data (e.g. groupname)" value="mygroup">
+    <button onclick="updateTLV()" style="padding:8px 16px;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer">Encode</button>
+    <div id="tlv-output">Select a message and enter payload to see the TLV encoding.</div>
+  </div>
+  <script>
+    function updateTLV() {
+      const type = parseInt(document.getElementById('msg-type').value);
+      const payload = document.getElementById('payload-input').value;
+      const out = document.getElementById('tlv-output');
+      const len = payload.length;
+      const typeName = document.getElementById('msg-type').options[document.getElementById('msg-type').selectedIndex].text;
+      let hex = `[0x${type.toString(16).padStart(2,'0')}] [0x${len.toString(16).padStart(2,'0')}]`;
+      let ascii = '';
+      for (let i = 0; i < len && i < 40; i++) {
+        hex += ` [0x${payload.charCodeAt(i).toString(16).padStart(2,'0')}]`;
+        ascii += payload[i];
+      }
+      if (len > 40) hex += ' ...';
+      out.innerHTML = `<strong>${typeName}</strong><br>`;
+      out.innerHTML += `<code>Type: 0x${type.toString(16).padStart(2,'0')} (${type})</code><br>`;
+      out.innerHTML += `<code>Length: ${len} (0x${len.toString(16).padStart(2,'0')})</code><br>`;
+      out.innerHTML += `<code>Payload: ${len} bytes</code><br>`;
+      out.innerHTML += `<br><strong>Wire bytes (${2 + len} total):</strong><br><code>${hex}</code>`;
+    }
+    updateTLV();
+  </script>
+</section>
+
+<!-- Module Map -->
+<section id="modules">
+  <h2>Module Map</h2>
+  <table>
+    <tr><th>Path</th><th>Description</th><th>Phase</th><th>Status</th></tr>
+    <tr><td><code>ds/gen_dlist.h</code></td><td>Generic doubly-linked list header</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>ds/gen_dlist.c</code></td><td>List implementation (sentinel-based, iterators)</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>ds/hash_map.h</code></td><td>HashMap header (course-provided)</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>ds/hash_map.c</code></td><td>HashMap with separate chaining, lazy buckets</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>tests/test_dlist.c</code></td><td>List unit tests (28 tests)</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>tests/test_hashmap.c</code></td><td>Hash map unit tests (18 tests)</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>src/types.h</code></td><td>Shared structs (GroupInfo)</td><td>1</td><td><span class="tag tag-next">Next</span></td></tr>
+    <tr><td><code>src/protocol.h</code></td><td>TLV enums + status codes</td><td>1</td><td><span class="tag tag-todo">Todo</span></td></tr>
+    <tr><td><code>src/comm_link.h/c</code></td><td>Comm-Link network abstraction layer</td><td>1</td><td><span class="tag tag-todo">Todo</span></td></tr>
+    <tr><td><code>Makefile</code></td><td>Build system for all targets</td><td>1</td><td><span class="tag tag-todo">Todo</span></td></tr>
+    <tr><td><code>src/server.h/c</code></td><td>TCP server with select() event loop</td><td>2</td><td><span class="tag tag-todo">Todo</span></td></tr>
+    <tr><td><code>src/server_mng.h/c</code></td><td>Server user management (register/login/logout)</td><td>2</td><td><span class="tag tag-todo">Todo</span></td></tr>
+    <tr><td><code>src/group_mng.h/c</code></td><td>Group management + MC IP pool</td><td>2</td><td><span class="tag tag-todo">Todo</span></td></tr>
+    <tr><td><code>src/client.h/c</code></td><td>Client main + TCP connect</td><td>3</td><td><span class="tag tag-todo">Todo</span></td></tr>
+    <tr><td><code>src/client_mng.h/c</code></td><td>Client-side protocol handling</td><td>3</td><td><span class="tag tag-todo">Todo</span></td></tr>
+    <tr><td><code>src/ui.h/c</code></td><td>Terminal UI screens</td><td>3</td><td><span class="tag tag-todo">Todo</span></td></tr>
+    <tr><td><code>src/chat_send.c</code></td><td>Multicast sender binary</td><td>4</td><td><span class="tag tag-todo">Todo</span></td></tr>
+    <tr><td><code>src/chat_recv.c</code></td><td>Multicast receiver binary</td><td>4</td><td><span class="tag tag-todo">Todo</span></td></tr>
+  </table>
+</section>
+
+<!-- Build & Test -->
+<section id="build">
+  <h2>Build &amp; Test</h2>
+  <h3>Building</h3>
+  <pre><span class="comment"># Build everything</span>
+make all
+
+<span class="comment"># Build specific target</span>
+make server
+make client
+make chat_send
+make chat_recv</pre>
+  <h3>Testing</h3>
+  <pre><span class="comment"># Run all tests</span>
+make test
+
+<span class="comment"># Run individual test suite</span>
+make test_dlist
+make test_hashmap
+make test_comm</pre>
+  <h3>Manual quick test (no Makefile needed)</h3>
+  <pre><span class="comment"># Test the doubly-linked list</span>
+gcc -I ds -I src tests/test_dlist.c ds/gen_dlist.c -o test_dlist && ./test_dlist
+
+<span class="comment"># Test the hash map</span>
+gcc -I ds -I src tests/test_hashmap.c ds/gen_dlist.c ds/hash_map.c -o test_hashmap && ./test_hashmap</pre>
+</section>
+
+<!-- Demo Flow -->
+<section id="demo">
+  <h2>Demo Flow</h2>
+  <p>The complete end-to-end user journey:</p>
+  <div class="cards">
+    <div class="card">
+      <h4>1. Register</h4>
+      <p>Client sends REGISTER_REQ with username + password. Server validates uniqueness, stores user.</p>
+    </div>
+    <div class="card">
+      <h4>2. Login</h4>
+      <p>Client sends LOGIN_REQ. Server verifies credentials, marks user active.</p>
+    </div>
+    <div class="card">
+      <h4>3. Create Group</h4>
+      <p>Client sends CREATE_GROUP_REQ. Server checks name uniqueness, allocates multicast address.</p>
+    </div>
+    <div class="card">
+      <h4>4. Join Group</h4>
+      <p>Client sends JOIN_GROUP_REQ. Server returns multicast addr + port. Client spawns chat windows.</p>
+    </div>
+    <div class="card">
+      <h4>5. Chat</h4>
+      <p>chat_send reads stdin, sends to UDP multicast. chat_recv listens on multicast, prints to stdout.</p>
+    </div>
+    <div class="card">
+      <h4>6. Leave Group</h4>
+      <p>Client sends LEAVE_GROUP_REQ. Server decrements member count, may auto-close group.</p>
+    </div>
+    <div class="card">
+      <h4>7. Logout</h4>
+      <p>Client sends LOGOUT_REQ. Server leaves all groups, marks inactive. Client closes all chat windows.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Team -->
+<section id="team">
+  <h2>Team</h2>
+  <table>
+    <tr><th>Role</th><th>Responsibility</th></tr>
+    <tr><td><strong>Dev A</strong> &mdash; Server</td><td>Phase 2 (server main, server_mng, group_mng) + shared infrastructure</td></tr>
+    <tr><td><strong>Dev B</strong> &mdash; Client</td><td>Phase 3 (client main, client_mng, UI) + shared infrastructure</td></tr>
+    <tr><td><strong>Both</strong></td><td>Phase 4 (chat windows, IPC integration)</td></tr>
+  </table>
+</section>
+
+</div>
+
+<footer>
+  GroupCast &mdash; Built for Data Communication course
+</footer>
+
+<script>
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  const btn = document.getElementById('theme-toggle');
+  btn.textContent = document.body.classList.contains('dark') ? '☀️ Light' : '🌙 Dark';
+}
+</script>
+
+</body>
+</html>
