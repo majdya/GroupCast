@@ -5,7 +5,7 @@ Real-time group chat on LAN using **TCP** (management) + **UDP multicast** (mess
 University Data Communication course project. C language.
 
 ## Current Focus
-- **Phase**: 1 (Protocol & Infrastructure)
+- **Phase**: 2 (Server)
 - **Pass**: 1 (Base — working MVP)
 - **Active files**: `src/types.h`, `src/protocol.h/c`, `src/comm_link.h/c`, `Makefile`, `tests/test_comm.c`
 - **Next action**: Phase 2 — Server (server_mng, group_mng, server select loop)
