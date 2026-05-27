@@ -1,48 +1,49 @@
-# Makefile - Chat Client Project
-#
-# Builds three binaries:
-#   client        - the main chat client
-#   chat_receiver - standalone multicast receiver (opened in gnome-terminal)
-#   chat_sender   - standalone multicast sender (opened in gnome-terminal)
-
 CC      = gcc
-CFLAGS  = -Wall -Wextra -pedantic -g
-LDFLAGS =
+CFLAGS  = -Wall -g -I ds -I src -I include
+LDLIBS  =
 
-# ---- Main client ----
-CLIENT_SRC = client_main.c client_net.c client_mng.c \
-             client_groups_mng.c ui.c protocol.c gen_dlist.c
-CLIENT_OBJ = $(CLIENT_SRC:.c=.o)
-CLIENT_BIN = client
+DS_SRC  = ds/gen_dlist.c ds/hash_map.c
+SRC_SRC = src/protocol.c src/comm_link.c
+SRV_SRC = src/server_mng.c src/group_mng.c src/server.c src/main.c
+CLN_SRC = src/client_main.c src/client_net.c src/client_mng.c \
+          src/client_groups_mng.c src/ui.c src/gen_dlist.c
+RECV_SRC = src/chat_receiver.c
+SEND_SRC = src/chat_sender.c
 
-# ---- Chat receiver (standalone) ----
-RECV_SRC = chat_receiver.c
-RECV_OBJ = $(RECV_SRC:.c=.o)
-RECV_BIN = chat_receiver
+.PHONY: all test clean
 
-# ---- Chat sender (standalone) ----
-SEND_SRC = chat_sender.c
-SEND_OBJ = $(SEND_SRC:.c=.o)
-SEND_BIN = chat_sender
+all: server client chat_receiver chat_sender test
 
-# ---- Targets ----
-all: $(CLIENT_BIN) $(RECV_BIN) $(SEND_BIN)
+server: $(SRC_SRC) $(SRV_SRC) $(DS_SRC)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
-$(CLIENT_BIN): $(CLIENT_OBJ)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+client: $(SRC_SRC) $(CLN_SRC)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
-$(RECV_BIN): $(RECV_OBJ)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+chat_receiver: $(RECV_SRC)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
-$(SEND_BIN): $(SEND_OBJ)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+chat_sender: $(SEND_SRC)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
-# ---- Compile rules ----
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+test: test_dlist test_hashmap test_comm test_e2e
 
-# ---- Clean ----
+test_dlist: tests/test_dlist.c ds/gen_dlist.c
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+	./$@
+
+test_hashmap: tests/test_hashmap.c $(DS_SRC)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+	./$@
+
+test_comm: tests/test_comm.c $(SRC_SRC)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+	./$@
+
+test_e2e: tests/test_e2e.c $(SRC_SRC) server
+	$(CC) $(CFLAGS) $< $(SRC_SRC) -o $@ $(LDLIBS)
+	./$@
+
 clean:
-	rm -f *.o $(CLIENT_BIN) $(RECV_BIN) $(SEND_BIN)
-
-.PHONY: all clean
+	rm -f server client chat_receiver chat_sender \
+	      test_dlist test_hashmap test_comm test_e2e
