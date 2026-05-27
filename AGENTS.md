@@ -7,7 +7,7 @@ University Data Communication course project. C language.
 ## Current Focus
 - **Phase**: 2 (Server)
 - **Pass**: 1 (Base — working MVP)
-- **Active files**: `src/types.h`, `src/protocol.h/c`, `src/comm_link.h/c`, `Makefile`, `tests/test_comm.c`
+- **Active files**: `src/server.h/c`, `src/server_mng.h/c`, `src/group_mng.h/c`
 - **Next action**: Phase 2 — Server (server_mng, group_mng, server select loop)
 - **Blockers**: None
 - **Known issues**: None
