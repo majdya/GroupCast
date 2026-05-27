@@ -5,10 +5,10 @@ Real-time group chat on LAN using **TCP** (management) + **UDP multicast** (mess
 University Data Communication course project. C language.
 
 ## Current Focus
-- **Phase**: 0 (Data Structures Library)
+- **Phase**: 2 (Server)
 - **Pass**: 1 (Base — working MVP)
-- **Active files**: `ds/gen_dlist.c`, `ds/hash_map.c`, `tests/test_dlist.c`, `tests/test_hashmap.c`
-- **Next action**: Implement `src/types.h` + `src/protocol.h` (Phase 1)
+- **Active files**: `src/server.h/c`, `src/server_mng.h/c`, `src/group_mng.h/c`
+- **Next action**: Phase 2 — Server (server_mng, group_mng, server select loop)
 - **Blockers**: None
 - **Known issues**: None
 
@@ -62,9 +62,9 @@ GroupCast/
 │   ├── hash_map.h                     (exists)
 │   └── hash_map.c                     (Phase 0)
 ├── src/
-│   ├── types.h                        (Phase 1)
-│   ├── protocol.h                     (Phase 1)
-│   ├── comm_link.h / comm_link.c      (Phase 1)
+│   ├── types.h                        (done)
+│   ├── protocol.h / protocol.c        (done)
+│   ├── comm_link.h / comm_link.c      (done)
 │   ├── server.h / server.c            (Phase 2)
 │   ├── server_mng.h / server_mng.c    (Phase 2)
 │   ├── group_mng.h / group_mng.c      (Phase 2)
@@ -75,7 +75,7 @@ GroupCast/
 │   └── chat_recv.c                    (Phase 4)
 ├── tests/                             (Pass 2)
 └── docs/
-    ├── www/index.html                  (Project documentation)
+    └── www/index.html                  (Project documentation)
 ```
 
 ## Pass 2 Upgrades
@@ -142,3 +142,8 @@ Separate chaining using linked lists. Bucket count rounded to nearest prime.
 | 2026-05-26 | Multicast range 239.255.0.0/24 | Administratively scoped, LAN-only, no upstream leakage |
 | 2026-05-26 | AGENTS.md + .opencode/tasks/ for context | Persistent project memory across sessions; auto-loaded on opencode start |
 | 2026-05-27 | Phase 0 complete | gen_dlist.c + hash_map.c implemented, 46 tests passing |
+| 2026-05-27 | Phase 1 complete | types.h, protocol.h/c, comm_link.h/c, test_comm.c, Makefile — 71 tests passing |
+| 2026-05-27 | dlist iterator fix | ListItrBegin(NULL) returns NULL; ListItrNext(end)/ListItrPrev(begin) return self per contract |
+| 2026-05-27 | hashmap overflow fix | i <= n/i avoids multiply overflow; next_prime saturation guard |
+| 2026-05-27 | Edge case tests added | Dlist 28→34, Hashmap 18→32 — covers NULL paths, chain ops, early ForEach stop |
+| 2026-05-27 | docs/www/index.html | Self-contained documentation page with TLV simulator, dark mode, module map |

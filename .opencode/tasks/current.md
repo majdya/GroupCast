@@ -1,44 +1,52 @@
-# Current Sprint — Phase 0: Data Structures Library
+# Current Sprint — Phase 2: Server
 
-**🔜 Next: 0.2 ListCreate + 0.3 ListDestroy**
+**🔜 Next: 2.1 server_mng.c + 2.2 group_mng.c + 2.3 server.c**
 
-## Phase 0 — ds/ implementation
+## Phase 1 — Protocol & Infrastructure (done)
+
+- [x] 1.1  `src/types.h` — GroupInfo struct
+- [x] 1.2  `src/protocol.h / protocol.c` — MessageType/StatusCode enums, pack/unpack helpers
+- [x] 1.3  `src/comm_link.h / comm_link.c` — CommPeer, Comm_Send, Comm_TryRecv, partial-read buffering
+- [x] 1.4  `tests/test_comm.c` — 5 socketpair tests (send/recv, partial, multi, zero, close)
+- [x] 1.5  `Makefile` — test_dlist, test_hashmap, test_comm, clean
+
+## Phase 0 — ds/ implementation (done)
 
 ### gen_dlist.c — Core Operations
-- [ ] 0.1  *header defined by user*
-- [ ] 0.2  `ListCreate` — allocate sentinel list
-- [ ] 0.3  `ListDestroy` — free all nodes + sentinels
-- [ ] 0.4  `ListPushHead` — insert at front
-- [ ] 0.5  `ListPopHead` — remove from front
-- [ ] 0.6  `ListPopTail` — remove from back
-- [ ] 0.7  `ListSize` — count elements
-- [ ] 0.8  `ListIsEmpty` — check if empty
+- [x] 0.1  *header defined by user*
+- [x] 0.2  `ListCreate` — allocate sentinel list
+- [x] 0.3  `ListDestroy` — free all nodes + sentinels
+- [x] 0.4  `ListPushHead` — insert at front
+- [x] 0.5  `ListPopHead` — remove from front
+- [x] 0.6  `ListPopTail` — remove from back
+- [x] 0.7  `ListSize` — count elements
+- [x] 0.8  `ListIsEmpty` — check if empty
 
 ### gen_dlist.c — Iterators
-- [ ] 0.9  `ListItrBegin` — first element
-- [ ] 0.10 `ListItrEnd` — past-the-end sentinel
-- [ ] 0.11 `ListItrNext` — advance
-- [ ] 0.12 `ListItrPrev` — retreat
-- [ ] 0.13 `ListItrGet` — read data
-- [ ] 0.14 `ListItrSet` — write data
-- [ ] 0.15 `ListItrInsertBefore` — insert before position
-- [ ] 0.16 `ListItrRemove` — remove at position
-- [ ] 0.17 `ListItrForEach` — apply action over range
+- [x] 0.9  `ListItrBegin` — first element
+- [x] 0.10 `ListItrEnd` — past-the-end sentinel
+- [x] 0.11 `ListItrNext` — advance
+- [x] 0.12 `ListItrPrev` — retreat
+- [x] 0.13 `ListItrGet` — read data
+- [x] 0.14 `ListItrSet` — write data
+- [x] 0.15 `ListItrInsertBefore` — insert before position
+- [x] 0.16 `ListItrRemove` — remove at position
+- [x] 0.17 `ListItrForEach` — apply action over range
 
 ### hash_map.c
-- [ ] 0.18 `HashMap_Create` — allocate bucket array (prime rounding)
-- [ ] 0.19 `HashMap_Destroy` — free all entries + buckets
-- [ ] 0.20 `HashMap_Insert` — hash → find bucket → list push
-- [ ] 0.21 `HashMap_Remove` — find key → list remove
-- [ ] 0.22 `HashMap_Find` — hash → search bucket list
-- [ ] 0.23 `HashMap_Size` — return item count
-- [ ] 0.24 `HashMap_Rehash` — resize + redistribute
-- [ ] 0.25 `HashMap_ForEach` — iterate all entries
-- [ ] 0.26 `HashMap_GetStatistics` — debug stats
+- [x] 0.18 `HashMap_Create` — allocate bucket array (prime rounding)
+- [x] 0.19 `HashMap_Destroy` — free all entries + buckets
+- [x] 0.20 `HashMap_Insert` — hash → find bucket → list push
+- [x] 0.21 `HashMap_Remove` — find key → list remove
+- [x] 0.22 `HashMap_Find` — hash → search bucket list
+- [x] 0.23 `HashMap_Size` — return item count
+- [x] 0.24 `HashMap_Rehash` — resize + redistribute
+- [x] 0.25 `HashMap_ForEach` — iterate all entries
+- [x] 0.26 `HashMap_GetStatistics` — debug stats
 
 ### tests/ — Pass 1 tests
-- [ ] 0.27 `tests/test_dlist.c` — test all list ops + iterators
-- [ ] 0.28 `tests/test_hashmap.c` — test all map ops
+- [x] 0.27 `tests/test_dlist.c` — test all list ops + iterators
+- [x] 0.28 `tests/test_hashmap.c` — test all map ops
 
 ---
 
