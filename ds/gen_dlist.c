@@ -115,7 +115,7 @@ int ListIsEmpty(const List* _list)
 
 ListItr ListItrBegin(const List* _list)
 {
-    if (!_list) return (ListItr)&_list->m_tail;
+    if (!_list) return NULL;
     return (ListItr)_list->m_head.m_next;
 }
 
@@ -129,6 +129,7 @@ ListItr ListItrNext(ListItr _itr)
 {
     if (!_itr) return NULL;
     Node* node = (Node*)_itr;
+    if (!node->m_next) return _itr;
     return (ListItr)node->m_next;
 }
 
@@ -136,6 +137,7 @@ ListItr ListItrPrev(ListItr _itr)
 {
     if (!_itr) return NULL;
     Node* node = (Node*)_itr;
+    if (!node->m_prev || !node->m_prev->m_prev) return _itr;
     return (ListItr)node->m_prev;
 }
 

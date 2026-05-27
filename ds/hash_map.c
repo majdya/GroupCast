@@ -20,7 +20,7 @@ struct HashMap {
 static int is_prime(size_t n)
 {
     if (n < 2) return 0;
-    for (size_t i = 2; i * i <= n; i++) {
+    for (size_t i = 2; i <= n / i; i++) {
         if (n % i == 0) return 0;
     }
     return 1;
@@ -28,7 +28,10 @@ static int is_prime(size_t n)
 
 static size_t next_prime(size_t n)
 {
-    while (!is_prime(n)) n++;
+    while (!is_prime(n)) {
+        if (n == (size_t)-1) return n;
+        ++n;
+    }
     return n;
 }
 
