@@ -12,7 +12,7 @@
 struct CommPeer {
     int      m_fd;
     uint8_t  m_rbuf[TLV_MAX_PAYLOAD + 2];
-    uint8_t  m_rlen;
+    uint16_t m_rlen;
     int      m_is_listener;
 };
 
@@ -84,6 +84,7 @@ void Comm_Close(CommPeer* peer)
 int Comm_Send(CommPeer* peer, uint8_t type, const void* data, uint8_t len)
 {
     if (!peer) return -1;
+    if (len > 0 && !data) return -1;
 
     uint8_t buf[TLV_MAX_PAYLOAD + 2];
     buf[0] = type;
@@ -122,11 +123,11 @@ CommResult Comm_TryRecv(CommPeer* peer, uint8_t* outType, void* outBuf, uint8_t*
     uint8_t plen = peer->m_rbuf[1];
     if (peer->m_rlen < 2 + plen) return COMM_AGAIN;
 
-    *outType = peer->m_rbuf[0];
-    *outLen = plen;
+    if (outType) *outType = peer->m_rbuf[0];
+    if (outLen)  *outLen  = plen;
     if (plen > 0 && outBuf) memcpy(outBuf, peer->m_rbuf + 2, plen);
 
-    uint8_t total = 2 + plen;
+    uint16_t total = 2 + plen;
     peer->m_rlen -= total;
     if (peer->m_rlen > 0)
         memmove(peer->m_rbuf, peer->m_rbuf + total, peer->m_rlen);

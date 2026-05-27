@@ -14,6 +14,7 @@ size_t Proto_PackStr(uint8_t* buf, const char* str)
 int Proto_UnpackStr(const uint8_t* buf, size_t len, char* out, size_t outCap)
 {
     if (len < 1) return -1;
+    if (outCap == 0) return -1;
     size_t slen = buf[0];
     if (1 + slen > len) return -1;
     size_t copy = slen < outCap - 1 ? slen : outCap - 1;
@@ -33,6 +34,7 @@ int Proto_UnpackUserPass(const uint8_t* buf, size_t len, char* user, size_t user
 {
     size_t off = 0;
     if (len < 1) return -1;
+    if (userCap == 0 || passCap == 0) return -1;
     size_t ulen = buf[0];
     if (1 + ulen > len) return -1;
     size_t ucpy = ulen < userCap - 1 ? ulen : userCap - 1;
