@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <signal.h>
+#include <unistd.h>
 
 // Array to store process information for all joined groups
 static GroupProcess group_processes[MAX_GROUPS];
