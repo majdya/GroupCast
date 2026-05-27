@@ -149,7 +149,7 @@
   <div class="container">
     <h1>GroupCast</h1>
     <p>Real-time group chat on LAN &mdash; TCP management + UDP multicast messaging</p>
-    <div class="meta">Data Communication course project &middot; C language &middot; Pass 1 (Base MVP)</div>
+    <div class="meta">Data Communication course project &middot; C language &middot; Phase 1 ✓ (71 tests passing)</div>
   </div>
 </header>
 
@@ -315,12 +315,14 @@ Screen 2 (Create/Join/Leave/Logout)    ├── Comm_Accept()
     <tr><td><code>ds/gen_dlist.c</code></td><td>List implementation (sentinel-based, iterators)</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>ds/hash_map.h</code></td><td>HashMap header (course-provided)</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>ds/hash_map.c</code></td><td>HashMap with separate chaining, lazy buckets</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
-    <tr><td><code>tests/test_dlist.c</code></td><td>List unit tests (28 tests)</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
-    <tr><td><code>tests/test_hashmap.c</code></td><td>Hash map unit tests (18 tests)</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
-    <tr><td><code>src/types.h</code></td><td>Shared structs (GroupInfo)</td><td>1</td><td><span class="tag tag-next">Next</span></td></tr>
-    <tr><td><code>src/protocol.h</code></td><td>TLV enums + status codes</td><td>1</td><td><span class="tag tag-todo">Todo</span></td></tr>
-    <tr><td><code>src/comm_link.h/c</code></td><td>Comm-Link network abstraction layer</td><td>1</td><td><span class="tag tag-todo">Todo</span></td></tr>
-    <tr><td><code>Makefile</code></td><td>Build system for all targets</td><td>1</td><td><span class="tag tag-todo">Todo</span></td></tr>
+    <tr><td><code>tests/test_dlist.c</code></td><td>List unit tests (34 tests)</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>tests/test_hashmap.c</code></td><td>Hash map unit tests (32 tests)</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>src/types.h</code></td><td>Shared structs (GroupInfo, max-size constants)</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>src/protocol.h</code></td><td>MessageType/StatusCode enums, TLV_MAX_PAYLOAD</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>src/protocol.c</code></td><td>Pack/unpack helpers for register, login, group resp</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>src/comm_link.h/c</code></td><td>Comm-Link: CommPeer opaque + TLV framing + partial-read buffering</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>tests/test_comm.c</code></td><td>Comm-Link tests via socketpair (5 tests)</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>Makefile</code></td><td>Build system for all targets</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>src/server.h/c</code></td><td>TCP server with select() event loop</td><td>2</td><td><span class="tag tag-todo">Todo</span></td></tr>
     <tr><td><code>src/server_mng.h/c</code></td><td>Server user management (register/login/logout)</td><td>2</td><td><span class="tag tag-todo">Todo</span></td></tr>
     <tr><td><code>src/group_mng.h/c</code></td><td>Group management + MC IP pool</td><td>2</td><td><span class="tag tag-todo">Todo</span></td></tr>
