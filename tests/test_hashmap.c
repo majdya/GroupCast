@@ -188,6 +188,110 @@ static void test_foreach_action(void)
     HashMap_Destroy(&m, NULL, NULL);
 }
 
+static void test_uninitialized(void)
+{
+    TEST("HashMap_Create with NULL callbacks returns NULL");
+    HashMap* m = HashMap_Create(10, NULL, NULL);
+    ASSERT(m == NULL, "should return NULL");
+    PASS();
+
+    TEST("HashMap_Insert with NULL map returns MAP_UNINITIALIZED_ERROR");
+    ASSERT(HashMap_Insert(NULL, (void*)1, (void*)"v") == MAP_UNINITIALIZED_ERROR, "wrong error");
+    PASS();
+
+    TEST("HashMap_Find with NULL map returns MAP_UNINITIALIZED_ERROR");
+    void* val;
+    ASSERT(HashMap_Find(NULL, (void*)1, &val) == MAP_UNINITIALIZED_ERROR, "wrong error");
+    PASS();
+
+    TEST("HashMap_Remove with NULL map returns MAP_UNINITIALIZED_ERROR");
+    ASSERT(HashMap_Remove(NULL, (void*)1, NULL, NULL) == MAP_UNINITIALIZED_ERROR, "wrong error");
+    PASS();
+
+    TEST("HashMap_Rehash with NULL map returns MAP_UNINITIALIZED_ERROR");
+    ASSERT(HashMap_Rehash(NULL, 10) == MAP_UNINITIALIZED_ERROR, "wrong error");
+    PASS();
+
+    TEST("HashMap_Size with NULL map returns 0");
+    ASSERT(HashMap_Size(NULL) == 0, "should return 0");
+    PASS();
+
+    TEST("HashMap_ForEach with NULL map returns 0");
+    ASSERT(HashMap_ForEach(NULL, count_each, NULL) == 0, "should return 0");
+    PASS();
+}
+
+static int stop_each(const void* key, void* value, void* ctx)
+{
+    (void)value; (void)key;
+    if (*(size_t*)ctx == 1) return 0;
+    (*(size_t*)ctx)++;
+    return 1;
+}
+
+static void test_foreach_edge(void)
+{
+    HashMap* m = HashMap_Create(10, hash_str, eq_str);
+    ASSERT(m != NULL, "create failed");
+    HashMap_Insert(m, (void*)"a", (void*)"1");
+    HashMap_Insert(m, (void*)"b", (void*)"2");
+    HashMap_Insert(m, (void*)"c", (void*)"3");
+
+    TEST("HashMap_ForEach with NULL action returns 0");
+    ASSERT(HashMap_ForEach(m, NULL, NULL) == 0, "should return 0");
+    PASS();
+
+    TEST("HashMap_ForEach early stop returns correct count");
+    size_t cnt = 0;
+    size_t n = HashMap_ForEach(m, stop_each, &cnt);
+    ASSERT(cnt == 1, "callback should stop after 1 call");
+    ASSERT(n == 2, "should return count+1 at stop point");
+    PASS();
+
+    HashMap_Destroy(&m, NULL, NULL);
+
+    m = HashMap_Create(10, hash_str, eq_str);
+    TEST("HashMap_ForEach on empty map returns 0");
+    ASSERT(HashMap_ForEach(m, count_each, NULL) == 0, "should return 0");
+    PASS();
+
+    HashMap_Destroy(&m, NULL, NULL);
+}
+
+static void test_chain_ops(void)
+{
+    HashMap* m = HashMap_Create(3, hash_int, eq_int);
+    HashMap_Insert(m, (void*)1, (void*)"v1");
+    HashMap_Insert(m, (void*)4, (void*)"v2");
+    HashMap_Insert(m, (void*)7, (void*)"v3");
+
+    TEST("HashMap_Find with NULL pValue");
+    ASSERT(HashMap_Find(m, (void*)1, NULL) == MAP_SUCCESS, "find should still succeed");
+    PASS();
+
+    TEST("HashMap_Remove with NULL pKey and pValue");
+    void* key = (void*)-1, *val = (void*)-1;
+    ASSERT(HashMap_Remove(m, (void*)7, NULL, NULL) == MAP_SUCCESS, "remove head failed");
+    ASSERT(HashMap_Size(m) == 2, "size should be 2");
+    PASS();
+
+    TEST("HashMap_Remove from middle of chain");
+    ASSERT(HashMap_Remove(m, (void*)4, &key, &val) == MAP_SUCCESS, "remove middle failed");
+    ASSERT(key == (void*)4, "wrong removed key");
+    ASSERT(val == (void*)"v2", "wrong removed value");
+    ASSERT(HashMap_Size(m) == 1, "size should be 1");
+    PASS();
+
+    TEST("HashMap_Remove from end of chain");
+    ASSERT(HashMap_Remove(m, (void*)1, &key, &val) == MAP_SUCCESS, "remove end failed");
+    ASSERT(key == (void*)1, "wrong removed key");
+    ASSERT(val == (void*)"v1", "wrong removed value");
+    ASSERT(HashMap_Size(m) == 0, "size should be 0");
+    PASS();
+
+    HashMap_Destroy(&m, NULL, NULL);
+}
+
 static void test_statistics(void)
 {
     HashMap* m = HashMap_Create(10, hash_int, eq_int);
@@ -218,6 +322,9 @@ int main(void)
     test_null_key();
     test_foreach();
     test_foreach_action();
+    test_uninitialized();
+    test_foreach_edge();
+    test_chain_ops();
     test_statistics();
 
     printf("\n%d passed, %d failed out of %d\n", passed, failed, passed + failed);
