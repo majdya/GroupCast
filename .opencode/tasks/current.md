@@ -1,8 +1,16 @@
-# Current Sprint — Phase 0: Data Structures Library
+# Current Sprint — Phase 2: Server
 
-**🔜 Next: 0.2 ListCreate + 0.3 ListDestroy**
+**🔜 Next: 2.1 server_mng.c + 2.2 group_mng.c + 2.3 server.c**
 
-## Phase 0 — ds/ implementation
+## Phase 1 — Protocol & Infrastructure (done)
+
+- [x] 1.1  `src/types.h` — GroupInfo struct
+- [x] 1.2  `src/protocol.h / protocol.c` — MessageType/StatusCode enums, pack/unpack helpers
+- [x] 1.3  `src/comm_link.h / comm_link.c` — CommPeer, Comm_Send, Comm_TryRecv, partial-read buffering
+- [x] 1.4  `tests/test_comm.c` — 5 socketpair tests (send/recv, partial, multi, zero, close)
+- [x] 1.5  `Makefile` — test_dlist, test_hashmap, test_comm, clean
+
+## Phase 0 — ds/ implementation (done)
 
 ### gen_dlist.c — Core Operations
 - [ ] 0.1  *header defined by user*
