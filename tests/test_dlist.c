@@ -261,6 +261,46 @@ static void test_foreach(void)
     ListDestroy(&l, NULL);
 }
 
+static void test_iterator_edge_cases(void)
+{
+    TEST("ListItrBegin(NULL) returns NULL");
+    ASSERT(ListItrBegin(NULL) == NULL, "should be NULL");
+    PASS();
+
+    TEST("ListItrEnd(NULL) returns NULL");
+    ASSERT(ListItrEnd(NULL) == NULL, "should be NULL");
+    PASS();
+
+    TEST("ListItrNext(end) returns end on empty list");
+    List* l = ListCreate();
+    ListItr end = ListItrEnd(l);
+    ASSERT(ListItrNext(end) == end, "next at end should return itself");
+    PASS();
+
+    TEST("ListItrPrev(begin) returns begin on empty list");
+    ListItr begin = ListItrBegin(l);
+    ASSERT(ListItrPrev(begin) == begin, "prev at begin should return itself");
+    PASS();
+
+    ListDestroy(&l, NULL);
+
+    l = ListCreate();
+    ListPushTail(l, (void*)"a");
+    ListPushTail(l, (void*)"b");
+    end = ListItrEnd(l);
+
+    TEST("ListItrNext(end) returns end on non-empty list");
+    ASSERT(ListItrNext(end) == end, "next at end should return itself");
+    PASS();
+
+    TEST("ListItrPrev(begin) returns begin on non-empty list");
+    begin = ListItrBegin(l);
+    ASSERT(ListItrPrev(begin) == begin, "prev at begin should return itself");
+    PASS();
+
+    ListDestroy(&l, NULL);
+}
+
 static void test_set(void)
 {
     List* l = ListCreate();
@@ -287,6 +327,7 @@ int main(void)
     test_size_empty();
     test_order();
     test_iterators();
+    test_iterator_edge_cases();
     test_insert_before();
     test_remove();
     test_foreach();
