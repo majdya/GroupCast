@@ -89,7 +89,7 @@ int Comm_Send(CommPeer* peer, uint8_t type, const void* data, uint8_t len)
     uint8_t buf[TLV_MAX_PAYLOAD + 2];
     buf[0] = type;
     buf[1] = len;
-    if (len > 0 && data) memcpy(buf + 2, data, len);
+    memcpy(buf + 2, data, len);
 
     size_t total = 2 + len;
     size_t sent = 0;
