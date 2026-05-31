@@ -160,6 +160,8 @@
     <a href="#protocol">Protocol</a>
     <a href="#modules">Module Map</a>
     <a href="#build">Build &amp; Test</a>
+    <a href="#run">Running</a>
+    <a href="#samples">Code Samples</a>
     <a href="#demo">Demo Flow</a>
     <a href="#team">Team</a>
     <button id="theme-toggle" onclick="toggleTheme()">🌙 Dark</button>
@@ -368,6 +370,85 @@ gcc -I ds -I include tests/test_comm.c src/protocol.c src/comm_link.c -o test_co
 
 <span class="comment"># Full e2e test</span>
 make test_e2e</pre>
+</section>
+
+<!-- Running -->
+<section id="run">
+  <h2>Running</h2>
+  <h3>Server</h3>
+  <pre><span class="comment"># Start server (default port 8888)</span>
+./server
+
+<span class="comment"># Or with a custom port</span>
+./server 5000</pre>
+
+  <h3>Client</h3>
+  <pre><span class="comment"># Connect to server on default port 8888</span>
+./client
+
+<span class="comment"># Connect to specific port</span>
+./client 8888</pre>
+
+  <h3>Full end-to-end</h3>
+  <pre><span class="comment"># Terminal 1 — start server</span>
+./server
+
+<span class="comment"># Terminal 2 — start client (register → login → create group → chat)</span>
+./client</pre>
+  <p>The client shows two menu screens:</p>
+  <ul>
+    <li><strong>Screen 1</strong>: Register, Login, Exit</li>
+    <li><strong>Screen 2</strong>: Create Group, Join Group, Leave Group, Logout</li>
+  </ul>
+  <p>On group creation or join, the server returns a multicast address + port. The client then spawns <code>chat_sender</code> and <code>chat_receiver</code> in <code>gnome-terminal</code> windows for chat. <em>(Requires gnome-terminal installed.)</em></p>
+</section>
+
+<!-- Code Samples -->
+<section id="samples">
+  <h2>Code Samples</h2>
+
+  <h3>TLV Pack/Unpack</h3>
+  <pre><span class="comment">// Pack username + password into TLV payload</span>
+uint8_t buf[<span class="type">TLV_MAX_PAYLOAD</span>];
+<span class="type">size_t</span> len = <span class="type">Proto_PackUserPass</span>(buf, <span class="string">"alice"</span>, <span class="string">"secret"</span>);
+
+<span class="comment">// Unpack on the receiving side</span>
+<span class="type">char</span> user[<span class="type">USER_NAME_MAX</span> + 1], pass[<span class="type">PASSWORD_MAX</span> + 1];
+<span class="type">Proto_UnpackUserPass</span>(buf, len, user, <span class="keyword">sizeof</span>(user),
+                     pass, <span class="keyword">sizeof</span>(pass));</pre>
+
+  <h3>Send a TLV Message</h3>
+  <pre><span class="comment">// Via Comm-Link (server-side)</span>
+<span class="type">Comm_Send</span>(peer, <span class="type">REGISTER_RESP</span>, &amp;status, 1);
+
+<span class="comment">// Via client_net (client-side)</span>
+<span class="type">TlvPacket</span> pkt = { .type = <span class="type">LOGIN_REQ</span>,
+                  .length = <span class="type">Proto_PackUserPass</span>(pkt.payload, user, pass) };
+<span class="type">send_request</span>(&amp;pkt, 2 + pkt.length);</pre>
+
+  <h3>Server Event Loop</h3>
+  <pre><span class="keyword">while</span> (srv-&gt;m_running) {
+    <span class="type">fd_set</span> rfds;
+    <span class="type">FD_ZERO</span>(&amp;rfds);
+    <span class="type">FD_SET</span>(<span class="type">Comm_FD</span>(srv-&gt;m_listener), &amp;rfds);
+    <span class="comment">// ... add client fds ...</span>
+    <span class="keyword">if</span> (<span class="type">FD_ISSET</span>(<span class="type">Comm_FD</span>(srv-&gt;m_listener), &amp;rfds)) {
+        <span class="type">CommPeer</span>* peer = <span class="type">Comm_Accept</span>(srv-&gt;m_listener);
+        <span class="comment">// assign peer to a free session slot</span>
+    }
+    <span class="comment">// iterate sessions, call Comm_TryRecv → handle_message</span>
+}</pre>
+
+  <h3>Client Two-Step Receive</h3>
+  <pre><span class="comment">// Read 2-byte TLV header, then payload</span>
+<span class="type">uint8_t</span> header[2];
+<span class="type">receive_response</span>(header, 2);
+<span class="type">TlvPacket</span> pkt;
+pkt.type   = header[0];
+pkt.length = header[1];
+<span class="keyword">if</span> (pkt.length &gt; 0)
+    <span class="type">receive_response</span>(pkt.payload, pkt.length);
+<span class="type">handle_server_response</span>(&amp;pkt);</pre>
 </section>
 
 <!-- Demo Flow -->
