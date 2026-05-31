@@ -56,6 +56,9 @@ dkms.conf
 
 # Project build artifacts
 server
+client
+chat_receiver
+chat_sender
 test_dlist
 test_hashmap
 test_comm
