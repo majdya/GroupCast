@@ -149,7 +149,7 @@
   <div class="container">
     <h1>GroupCast</h1>
     <p>Real-time group chat on LAN &mdash; TCP management + UDP multicast messaging</p>
-    <div class="meta">Data Communication course project &middot; C language &middot; Phase 1 ✓ (71 tests passing)</div>
+    <div class="meta">Data Communication course project &middot; C language &middot; All phases ✓ (77 tests passing)</div>
   </div>
 </header>
 
@@ -317,20 +317,22 @@ Screen 2 (Create/Join/Leave/Logout)    ├── Comm_Accept()
     <tr><td><code>ds/hash_map.c</code></td><td>HashMap with separate chaining, lazy buckets</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>tests/test_dlist.c</code></td><td>List unit tests (34 tests)</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>tests/test_hashmap.c</code></td><td>Hash map unit tests (32 tests)</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
-    <tr><td><code>src/types.h</code></td><td>Shared structs (GroupInfo, max-size constants)</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
-    <tr><td><code>src/protocol.h</code></td><td>MessageType/StatusCode enums, TLV_MAX_PAYLOAD</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>include/types.h</code></td><td>Shared structs (GroupInfo, max-size constants)</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>include/protocol.h</code></td><td>MessageType/StatusCode enums, TLV_MAX_PAYLOAD</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>src/protocol.c</code></td><td>Pack/unpack helpers for register, login, group resp</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
-    <tr><td><code>src/comm_link.h/c</code></td><td>Comm-Link: CommPeer opaque + TLV framing + partial-read buffering</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>include/comm_link.h</code> + <code>src/comm_link.c</code></td><td>Comm-Link: CommPeer opaque + TLV framing + partial-read buffering</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>tests/test_comm.c</code></td><td>Comm-Link tests via socketpair (5 tests)</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>Makefile</code></td><td>Build system for all targets</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
-    <tr><td><code>src/server.h/c</code></td><td>TCP server with select() event loop</td><td>2</td><td><span class="tag tag-todo">Todo</span></td></tr>
-    <tr><td><code>src/server_mng.h/c</code></td><td>Server user management (register/login/logout)</td><td>2</td><td><span class="tag tag-todo">Todo</span></td></tr>
-    <tr><td><code>src/group_mng.h/c</code></td><td>Group management + MC IP pool</td><td>2</td><td><span class="tag tag-todo">Todo</span></td></tr>
-    <tr><td><code>src/client.h/c</code></td><td>Client main + TCP connect</td><td>3</td><td><span class="tag tag-todo">Todo</span></td></tr>
-    <tr><td><code>src/client_mng.h/c</code></td><td>Client-side protocol handling</td><td>3</td><td><span class="tag tag-todo">Todo</span></td></tr>
-    <tr><td><code>src/ui.h/c</code></td><td>Terminal UI screens</td><td>3</td><td><span class="tag tag-todo">Todo</span></td></tr>
-    <tr><td><code>src/chat_send.c</code></td><td>Multicast sender binary</td><td>4</td><td><span class="tag tag-todo">Todo</span></td></tr>
-    <tr><td><code>src/chat_recv.c</code></td><td>Multicast receiver binary</td><td>4</td><td><span class="tag tag-todo">Todo</span></td></tr>
+    <tr><td><code>include/server.h</code> + <code>src/server.c</code></td><td>TCP server with select() event loop</td><td>2</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>include/server_mng.h</code> + <code>src/server_mng.c</code></td><td>Server user management (register/login/logout)</td><td>2</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>include/group_mng.h</code> + <code>src/group_mng.c</code></td><td>Group management + MC IP pool</td><td>2</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>src/client_main.c</code> + <code>include/client_net.h</code> + <code>src/client_net.c</code></td><td>Client main + TCP connect</td><td>3</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>include/client_mng.h</code> + <code>src/client_mng.c</code></td><td>Client-side protocol handling</td><td>3</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>include/ui.h</code> + <code>src/ui.c</code></td><td>Terminal UI screens</td><td>3</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>include/client_groups_mng.h</code> + <code>src/client_groups_mng.c</code></td><td>Local group list mgmt (kill PIDs, free memory)</td><td>3</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>src/chat_sender.c</code></td><td>Multicast sender binary</td><td>4</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>src/chat_receiver.c</code></td><td>Multicast receiver binary</td><td>4</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>tests/test_e2e.c</code></td><td>End-to-end server tests (6 tests)</td><td>2</td><td><span class="tag tag-done">Done</span></td></tr>
   </table>
 </section>
 
@@ -344,8 +346,8 @@ make all
 <span class="comment"># Build specific target</span>
 make server
 make client
-make chat_send
-make chat_recv</pre>
+make chat_sender
+make chat_receiver</pre>
   <h3>Testing</h3>
   <pre><span class="comment"># Run all tests</span>
 make test
@@ -356,10 +358,16 @@ make test_hashmap
 make test_comm</pre>
   <h3>Manual quick test (no Makefile needed)</h3>
   <pre><span class="comment"># Test the doubly-linked list</span>
-gcc -I ds -I src tests/test_dlist.c ds/gen_dlist.c -o test_dlist && ./test_dlist
+gcc -I ds -I include tests/test_dlist.c ds/gen_dlist.c -o test_dlist && ./test_dlist
 
 <span class="comment"># Test the hash map</span>
-gcc -I ds -I src tests/test_hashmap.c ds/gen_dlist.c ds/hash_map.c -o test_hashmap && ./test_hashmap</pre>
+gcc -I ds -I include tests/test_hashmap.c ds/hash_map.c -o test_hashmap && ./test_hashmap
+
+<span class="comment"># Test comm layer</span>
+gcc -I ds -I include tests/test_comm.c src/protocol.c src/comm_link.c -o test_comm && ./test_comm
+
+<span class="comment"># Full e2e test</span>
+make test_e2e</pre>
 </section>
 
 <!-- Demo Flow -->

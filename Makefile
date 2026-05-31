@@ -1,12 +1,12 @@
 CC      = gcc
-CFLAGS  = -Wall -g -I ds -I src -I include
+CFLAGS  = -Wall -g -I ds -I include
 LDLIBS  =
 
-DS_SRC  = ds/gen_dlist.c ds/hash_map.c
+DS_SRC  = ds/hash_map.c
 SRC_SRC = src/protocol.c src/comm_link.c
 SRV_SRC = src/server_mng.c src/group_mng.c src/server.c src/main.c
 CLN_SRC = src/client_main.c src/client_net.c src/client_mng.c \
-          src/client_groups_mng.c src/ui.c src/gen_dlist.c
+          src/client_groups_mng.c src/ui.c ds/gen_dlist.c
 RECV_SRC = src/chat_receiver.c
 SEND_SRC = src/chat_sender.c
 

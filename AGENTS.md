@@ -5,8 +5,8 @@ Real-time group chat on LAN using **TCP** (management) + **UDP multicast** (mess
 University Data Communication course project. C language.
 
 ## Current Focus
-- **Phase**: 2 (Server) ✅ **Done**
-- **Next action**: Phase 3 — Client
+- **Phase**: All ✅ **Done** (77 tests passing)
+- **Next action**: Pass 2 — Advanced (polish, CI, docs)
 - **Blockers**: None
 - **Known issues**: None
 
@@ -59,19 +59,26 @@ GroupCast/
 │   ├── gen_dlist.c                    (Phase 0)
 │   ├── hash_map.h                     (exists)
 │   └── hash_map.c                     (Phase 0)
-├── src/
+├── include/
+│   ├── protocol.h                     (done)
 │   ├── types.h                        (done)
-│   ├── protocol.h / protocol.c        (done)
-│   ├── comm_link.h / comm_link.c      (done)
-│   ├── server.h / server.c            (Phase 2)
-│   ├── server_mng.h / server_mng.c    (Phase 2)
-│   ├── group_mng.h / group_mng.c      (Phase 2)
-│   ├── client.h / client.c            (Phase 3)
-│   ├── client_mng.h / client_mng.c    (Phase 3)
-│   ├── ui.h / ui.c                    (Phase 3)
-│   ├── chat_send.c                    (Phase 4)
-│   └── chat_recv.c                    (Phase 4)
-├── tests/                             (Pass 2)
+│   ├── comm_link.h                    (done)
+│   ├── common.h                       (client shared)
+│   ├── server.h / server_mng.h / group_mng.h
+│   ├── client_net.h / client_mng.h / client_groups_mng.h
+│   └── ui.h
+├── src/
+│   ├── protocol.c                     (done)
+│   ├── comm_link.c                    (done)
+│   ├── server.c / server_mng.c / group_mng.c / main.c
+│   ├── client_main.c / client_net.c / client_mng.c / client_groups_mng.c / ui.c
+│   ├── chat_sender.c                  (Phase 4)
+│   └── chat_receiver.c                (Phase 4)
+├── tests/
+│   ├── test_dlist.c                   (34 tests)
+│   ├── test_hashmap.c                 (32 tests)
+│   ├── test_comm.c                    (5 tests)
+│   └── test_e2e.c                     (6 tests)
 └── docs/
     └── www/index.html                  (Project documentation)
 ```
@@ -145,3 +152,7 @@ Separate chaining using linked lists. Bucket count rounded to nearest prime.
 | 2026-05-27 | hashmap overflow fix | i <= n/i avoids multiply overflow; next_prime saturation guard |
 | 2026-05-27 | Edge case tests added | Dlist 28→34, Hashmap 18→32 — covers NULL paths, chain ops, early ForEach stop |
 | 2026-05-27 | docs/www/index.html | Self-contained documentation page with TLV simulator, dark mode, module map |
+| 2026-05-31 | Rebase completed | Resolved Makefile + protocol.c conflicts, merged task/merge_client_server branch |
+| 2026-05-31 | Include/ convention | All public headers moved to include/; src/ contains only .c implementations |
+| 2026-05-31 | send/recv stream-safe | send_request/receive_response now loop for full TLV framing; recv_and_handle reads header then payload |
+| 2026-05-31 | Client port arg | ./client [port] accepts optional port argument, defaults to 8888 matching server default |

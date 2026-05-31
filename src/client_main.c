@@ -26,7 +26,7 @@
 
 /* Server connection settings */
 #define SERVER_IP   "127.0.0.1"
-#define SERVER_PORT 5000
+#define SERVER_PORT 8888
 
 /* Timeout for reading PID from message queue (seconds) */
 #define MQ_TIMEOUT_SEC 5
@@ -84,9 +84,17 @@ static int build_and_send(MessageType type, const char *username,
  * ---------------------------------------------------------------- */
 static int recv_and_handle(void)
 {
+    uint8_t header[2];
+    if (receive_response(header, 2) <= 0) return -1;
+
     TlvPacket pkt;
-    int n = receive_response(&pkt, sizeof(pkt));
-    if (n <= 0) return -1;
+    pkt.type   = header[0];
+    pkt.length = header[1];
+
+    if (pkt.length > 0) {
+        if (receive_response(pkt.payload, pkt.length) <= 0) return -1;
+    }
+
     handle_server_response(&pkt);
     return 0;
 }
@@ -204,8 +212,14 @@ static void sigalrm_handler(int sig)
 /* ----------------------------------------------------------------
  * main
  * ---------------------------------------------------------------- */
-int main(void)
+int main(int argc, char* argv[])
 {
+    uint16_t port = SERVER_PORT;
+    if (argc > 1) {
+        long p = atol(argv[1]);
+        if (p > 0 && p <= 65535) port = (uint16_t)p;
+    }
+
     char username[MAX_USERNAME_LEN]    = {0};
     char password[MAX_PASSWORD_LEN]    = {0};
     char group_name[MAX_GROUP_NAME_LEN] = {0};
@@ -220,9 +234,9 @@ int main(void)
     printf("[Client] Starting Chat Client...\n");
 
     /* 1. Connect to server */
-    if (connect_to_server(SERVER_IP, SERVER_PORT) < 0) {
+    if (connect_to_server(SERVER_IP, port) < 0) {
         fprintf(stderr, "[Client] Cannot connect to %s:%d\n",
-                SERVER_IP, SERVER_PORT);
+                SERVER_IP, port);
         return EXIT_FAILURE;
     }
 

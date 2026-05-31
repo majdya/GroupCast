@@ -58,17 +58,15 @@ int connect_to_server(const char *ip, int port)
  */
 int send_request(const void *data, size_t len)
 {
-    if (g_sockfd < 0) {
-        fprintf(stderr, "[Net] Not connected\n");
-        return -1;
-    }
+    if (g_sockfd < 0) return -1;
 
-    ssize_t sent = send(g_sockfd, data, len, 0);
-    if (sent < 0) {
-        perror("[Net] send");
-        return -1;
+    size_t total = 0;
+    while (total < len) {
+        ssize_t n = send(g_sockfd, (const char*)data + total, len - total, 0);
+        if (n < 0) return -1;
+        total += n;
     }
-    return (int)sent;
+    return (int)total;
 }
 
 /*
@@ -77,20 +75,16 @@ int send_request(const void *data, size_t len)
  */
 int receive_response(void *buffer, size_t maxlen)
 {
-    if (g_sockfd < 0) {
-        fprintf(stderr, "[Net] Not connected\n");
-        return -1;
-    }
+    if (g_sockfd < 0) return -1;
 
-    ssize_t received = recv(g_sockfd, buffer, maxlen, 0);
-    if (received < 0) {
-        perror("[Net] recv");
-        return -1;
+    size_t total = 0;
+    while (total < maxlen) {
+        ssize_t n = recv(g_sockfd, (char*)buffer + total, maxlen - total, 0);
+        if (n < 0) return -1;
+        if (n == 0) return total > 0 ? (int)total : 0;
+        total += n;
     }
-    if (received == 0) {
-        printf("[Net] Server closed the connection\n");
-    }
-    return (int)received;
+    return (int)total;
 }
 
 /*
