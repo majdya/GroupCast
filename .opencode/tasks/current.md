@@ -1,6 +1,8 @@
 # Current Sprint — Phase 2: Server
 
-**🔜 Next: 2.1 server_mng.c + 2.2 group_mng.c + 2.3 server.c**
+**✅ Done: 2.1–2.3 — Full server implementation**
+
+**🔜 Next: Phase 3 — Client**
 
 ## Phase 1 — Protocol & Infrastructure (done)
 
@@ -59,10 +61,10 @@
 - [ ] 1.4  `tests/test_comm.c` — socketpair-based TLV send/recv/partial/multi tests
 - [ ] 1.5  `Makefile` — all targets + test targets, -Wall -g, -lrt
 
-### Phase 2 — Server
-- [ ] 2.1  `src/server_mng.c` — HandleRegister, HandleLogin, HandleLogout
-- [ ] 2.2  `src/group_mng.c` — HandleCreate, HandleJoin, HandleLeave, MC pool
-- [ ] 2.3  `src/server.c` — select() loop, accept, dispatch, disconnect
+### Phase 2 — Server (done)
+- [x] 2.1  `src/server_mng.h / server_mng.c` — Register, Login, Logout
+- [x] 2.2  `src/group_mng.h / group_mng.c` — GroupCreate, GroupJoin, GroupLeave, MC pool
+- [x] 2.3  `src/server.h / server.c / main.c` — select() loop, accept, dispatch, disconnect
 
 ### Phase 3 — Client
 - [ ] 3.1  `src/client_mng.c` — Register, Login, CreateGroup, JoinGroup, LeaveGroup, Logout wrappers
