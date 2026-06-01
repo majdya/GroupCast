@@ -23,6 +23,9 @@ static char g_pending_ip[MAX_IP_LEN] = {0};
 static int  g_pending_port           = 0;
 static int  g_pending_valid          = 0;
 
+/* ---- Last login status ---- */
+static int g_login_ok = 0;
+
 void pending_group_clear(void)
 {
     g_pending_ip[0] = '\0';
@@ -39,6 +42,11 @@ int pending_group_get(char *ip_out, int *port_out)
     ip_out[MAX_IP_LEN - 1] = '\0';
     *port_out = g_pending_port;
     return 1;
+}
+
+int last_login_ok(void)
+{
+    return g_login_ok;
 }
 
 /* ---- Main dispatcher ---- */
@@ -79,6 +87,7 @@ static void handle_register_resp(const TlvPacket *pkt)
 static void handle_login_resp(const TlvPacket *pkt)
 {
     uint8_t status = pkt->payload[0];
+    g_login_ok = (status == SUCCESS);
     if (status == SUCCESS) {
         printf("[Server] Login successful.\n");
     } else {

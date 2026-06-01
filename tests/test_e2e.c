@@ -280,6 +280,48 @@ static void test_multi_session(void)
     PASS();
 }
 
+static void test_failed_login_blocks_groups(void)
+{
+    uint8_t payload[TLV_MAX_PAYLOAD];
+    size_t  plen;
+
+    /* Fresh connection — register a user */
+    CommPeer* p = Comm_Connect("127.0.0.1", TEST_PORT);
+    ASSERT(p != NULL, "connect failed");
+
+    plen = Proto_PackUserPass(payload, "loginfail", "pass");
+    req_resp_status(p, REGISTER_REQ, REGISTER_RESP, payload, (uint8_t)plen, SUCCESS);
+
+    /* Login with wrong password should fail */
+    plen = Proto_PackUserPass(payload, "loginfail", "wrongpass");
+    req_resp_status(p, LOGIN_REQ, LOGIN_RESP, payload, (uint8_t)plen, ERR_WRONG_PASSWORD);
+
+    /* Group op must still be rejected — not logged in */
+    plen = Proto_PackStr(payload, "anygroup");
+    req_resp_status(p, CREATE_GROUP_REQ, CREATE_GROUP_RESP,
+                    payload, (uint8_t)plen, ERR_GENERAL);
+
+    /* Login with non-existing user should fail */
+    plen = Proto_PackUserPass(payload, "ghost", "x");
+    req_resp_status(p, LOGIN_REQ, LOGIN_RESP, payload, (uint8_t)plen, ERR_USER_NOT_FOUND);
+
+    /* Group op must still be rejected */
+    plen = Proto_PackStr(payload, "anygroup2");
+    req_resp_status(p, JOIN_GROUP_REQ, JOIN_GROUP_RESP,
+                    payload, (uint8_t)plen, ERR_GENERAL);
+
+    /* Now login correctly — group ops should succeed */
+    plen = Proto_PackUserPass(payload, "loginfail", "pass");
+    req_resp_status(p, LOGIN_REQ, LOGIN_RESP, payload, (uint8_t)plen, SUCCESS);
+
+    plen = Proto_PackStr(payload, "testgroup");
+    req_resp_status(p, CREATE_GROUP_REQ, CREATE_GROUP_RESP,
+                    payload, (uint8_t)plen, SUCCESS);
+
+    Comm_Close(p);
+    PASS();
+}
+
 /* ------------------------------------------------------------------ */
 /*  Main                                                               */
 /* ------------------------------------------------------------------ */
@@ -322,6 +364,9 @@ int main(int argc, char* argv[])
 
     printf("\ne2e — multi-session:\n");
     test_multi_session();
+
+    printf("\ne2e — failed login blocks groups:\n");
+    test_failed_login_blocks_groups();
 
     /* ---- cleanup ---- */
 

@@ -1,5 +1,5 @@
 CC      = gcc
-CFLAGS  = -Wall -g -I ds -I include
+CFLAGS  = -Wall -g -I ds -I include -D_DEFAULT_SOURCE
 LDLIBS  =
 
 DS_SRC  = ds/hash_map.c

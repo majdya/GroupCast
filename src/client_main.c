@@ -150,6 +150,7 @@ static pid_t read_pid_from_mq(int mq_id, long mtype)
  * ---------------------------------------------------------------- */
 static int launch_chat_windows(const char *group_name,
                                const char *multicast_ip, int port,
+                               const char *username,
                                GroupInfo *out_group)
 {
     char cmd[512];
@@ -170,8 +171,9 @@ static int launch_chat_windows(const char *group_name,
     /* Launch sender in a new terminal window */
     snprintf(cmd, sizeof(cmd),
              "gnome-terminal --title=\"[%s] Sender\" -- "
-             "./chat_sender %s %d %d &",
-             group_name, multicast_ip, port, mq_id);
+             "./chat_sender %s %d %d %s &",
+             group_name, multicast_ip, port, mq_id,
+             username ? username : "");
     system(cmd);
 
     /* Read PIDs from message queue */
@@ -268,7 +270,7 @@ int main(int argc, char* argv[])
             }
 
             /* If login was successful, move to Screen 2 */
-            if (action == UI_LOGIN) {
+            if (action == UI_LOGIN && last_login_ok()) {
                 logged_in = 1;
             }
             /* Registration: stay on Screen 1 so user can now login */
@@ -306,7 +308,8 @@ int main(int argc, char* argv[])
                     if (pending_group_get(pending_ip, &pending_port)) {
                         GroupInfo g;
                         if (launch_chat_windows(group_name, pending_ip,
-                                               pending_port, &g) == 0) {
+                                               pending_port, username,
+                                               &g) == 0) {
                             add_group(&g);
                         }
                     }

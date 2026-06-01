@@ -21,6 +21,7 @@
 #include <sys/msg.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <time.h>
 
 #define MAX_MSG_LEN 512
 
@@ -132,7 +133,11 @@ int main(int argc, char *argv[])
             break;
         }
         buf[n] = '\0';
-        printf("%s\n", buf);
+
+        time_t now = time(NULL);
+        char ts[9];
+        strftime(ts, sizeof(ts), "%H:%M:%S", localtime(&now));
+        printf("[%s] %s\n", ts, buf);
         fflush(stdout);
     }
 

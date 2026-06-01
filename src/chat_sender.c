@@ -8,7 +8,7 @@
  *   3. Sends each message to the multicast group
  *   4. Exits gracefully on SIGTERM or empty input
  *
- * Usage: ./chat_sender <multicast_ip> <port> <mq_id>
+ * Usage: ./chat_sender <multicast_ip> <port> <mq_id> <username>
  */
 
 #include <stdio.h>
@@ -49,14 +49,15 @@ int main(int argc, char *argv[])
     char               buf[MAX_MSG_LEN + 1];
 
     /* Parse command line arguments */
-    if (argc != 4) {
-        fprintf(stderr, "Usage: %s <multicast_ip> <port> <mq_id>\n", argv[0]);
+    if (argc != 5) {
+        fprintf(stderr, "Usage: %s <multicast_ip> <port> <mq_id> <username>\n", argv[0]);
         return EXIT_FAILURE;
     }
 
     const char *multicast_ip = argv[1];
     int port   = atoi(argv[2]);
     int mq_id  = atoi(argv[3]);
+    const char *username = argv[4];
 
     /* Install SIGTERM handler for graceful shutdown */
     struct sigaction sa;
@@ -125,8 +126,12 @@ int main(int argc, char *argv[])
             continue;
         }
 
+        /* Prepend username to the message */
+        char msg[MAX_MSG_LEN + 32];
+        snprintf(msg, sizeof(msg), "[%s] %s", username, buf);
+
         /* Send the message to multicast */
-        ssize_t sent = sendto(sockfd, buf, len, 0,
+        ssize_t sent = sendto(sockfd, msg, strlen(msg), 0,
                               (struct sockaddr *)&dest_addr,
                               sizeof(dest_addr));
         if (sent < 0) {

@@ -24,4 +24,7 @@ void pending_group_clear(void);
  */
 int pending_group_get(char *ip_out, int *port_out);
 
+/* Returns 1 if the last LOGIN_RESP had status SUCCESS. */
+int last_login_ok(void);
+
 #endif /* CLIENT_MNG_H */
