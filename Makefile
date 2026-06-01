@@ -45,9 +45,5 @@ test_e2e: tests/test_e2e.c $(SRC_SRC) server
 	./$@
 
 clean:
-<<<<<<< HEAD
-	rm -f server test_dlist test_hashmap test_comm test_e2e
-=======
 	rm -f server client chat_receiver chat_sender \
 	      test_dlist test_hashmap test_comm test_e2e
->>>>>>> task/merge_client_server
