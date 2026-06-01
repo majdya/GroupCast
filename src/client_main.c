@@ -24,9 +24,9 @@
 #include <sys/msg.h>
 #include <signal.h>
 
-/* Server connection settings */
-#define SERVER_IP   "127.0.0.1"
-#define SERVER_PORT 8888
+/* Server connection defaults */
+#define DEFAULT_IP    "127.0.0.1"
+#define DEFAULT_PORT  8888
 
 /* Timeout for reading PID from message queue (seconds) */
 #define MQ_TIMEOUT_SEC 5
@@ -216,10 +216,13 @@ static void sigalrm_handler(int sig)
  * ---------------------------------------------------------------- */
 int main(int argc, char* argv[])
 {
-    uint16_t port = SERVER_PORT;
-    if (argc > 1) {
-        long p = atol(argv[1]);
-        if (p > 0 && p <= 65535) port = (uint16_t)p;
+    const char *server_ip   = DEFAULT_IP;
+    uint16_t    server_port = DEFAULT_PORT;
+
+    if (argc > 1) server_ip   = argv[1];
+    if (argc > 2) {
+        long p = atol(argv[2]);
+        if (p > 0 && p <= 65535) server_port = (uint16_t)p;
     }
 
     char username[MAX_USERNAME_LEN]    = {0};
@@ -236,9 +239,9 @@ int main(int argc, char* argv[])
     printf("[Client] Starting Chat Client...\n");
 
     /* 1. Connect to server */
-    if (connect_to_server(SERVER_IP, port) < 0) {
+    if (connect_to_server(server_ip, server_port) < 0) {
         fprintf(stderr, "[Client] Cannot connect to %s:%d\n",
-                SERVER_IP, port);
+                server_ip, server_port);
         return EXIT_FAILURE;
     }
 
