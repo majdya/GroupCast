@@ -7,8 +7,8 @@
 #include <stdio.h>
 
 #define MC_BASE       "239.255.0."
-#define PORT_BASE     50000
-#define MAX_GROUPS    64
+#define PORT_BASE 50000
+#define MAX_GROUPS 64
 
 typedef struct {
     char     m_addr[16];
@@ -18,8 +18,8 @@ typedef struct {
 } GroupData;
 
 struct GroupMng {
-    HashMap*  m_groups;
-    uint64_t  m_mc_bitmap;
+    HashMap* m_groups;
+    uint64_t m_mc_bitmap;
 };
 
 static size_t hash_str(void* key)

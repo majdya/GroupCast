@@ -10,13 +10,14 @@
  *   - Message queue struct for PID communication
  */
 
+#include "types.h"
 #include "protocol.h"
 #include <sys/types.h>
 
-/* ---- Buffer size constants ---- */
-#define MAX_USERNAME_LEN   32
-#define MAX_PASSWORD_LEN   32
-#define MAX_GROUP_NAME_LEN 64
+/* Buffer size constants — derived from types.h limits (+1 for null terminator) */
+#define MAX_USERNAME_LEN   (USER_NAME_MAX + 1)
+#define MAX_PASSWORD_LEN   (PASSWORD_MAX + 1)
+#define MAX_GROUP_NAME_LEN (GROUP_NAME_MAX + 1)
 #define MAX_MSG_LEN        512
 #define MAX_IP_LEN         16
 
