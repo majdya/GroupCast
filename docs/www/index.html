@@ -149,7 +149,7 @@
   <div class="container">
     <h1>GroupCast</h1>
     <p>Real-time group chat on LAN &mdash; TCP management + UDP multicast messaging</p>
-    <div class="meta">Data Communication course project &middot; C language &middot; All phases ✓ (77 tests passing)</div>
+    <div class="meta">Data Communication course project &middot; C language &middot; All phases ✓ (78 tests passing)</div>
   </div>
 </header>
 
@@ -245,7 +245,7 @@ Screen 2 (Create/Join/Leave/Logout)    ├── Comm_Accept()
     <tr><td>0x08</td><td>JOIN_GROUP_RESP</td><td>Join result</td><td>status + [mcast_addr + mcast_port]</td></tr>
     <tr><td>0x09</td><td>LEAVE_GROUP_REQ</td><td>Leave group</td><td>groupname_len + groupname</td></tr>
     <tr><td>0x0A</td><td>LEAVE_GROUP_RESP</td><td>Leave result</td><td>status</td></tr>
-    <tr><td>0x0B</td><td>LOGOUT_REQ</td><td>Logout</td><td>empty</td></tr>
+    <tr><td>0x0B</td><td>LOGOUT_REQ</td><td>Logout</td><td>username_len + username</td></tr>
     <tr><td>0x0C</td><td>LOGOUT_RESP</td><td>Logout result</td><td>status</td></tr>
   </table>
 
@@ -319,13 +319,15 @@ Screen 2 (Create/Join/Leave/Logout)    ├── Comm_Accept()
     <tr><td><code>ds/hash_map.c</code></td><td>HashMap with separate chaining, lazy buckets</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>tests/test_dlist.c</code></td><td>List unit tests (34 tests)</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>tests/test_hashmap.c</code></td><td>Hash map unit tests (32 tests)</td><td>0</td><td><span class="tag tag-done">Done</span></td></tr>
-    <tr><td><code>include/types.h</code></td><td>Shared structs (GroupInfo, max-size constants)</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>include/types.h</code></td><td>Shared constants (USER_NAME_MAX, etc.)</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>include/common.h</code></td><td>Client shared: TlvPacket, buffer sizes, MQ struct</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>include/protocol.h</code></td><td>MessageType/StatusCode enums, TLV_MAX_PAYLOAD</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>src/protocol.c</code></td><td>Pack/unpack helpers for register, login, group resp</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>include/comm_link.h</code> + <code>src/comm_link.c</code></td><td>Comm-Link: CommPeer opaque + TLV framing + partial-read buffering</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>tests/test_comm.c</code></td><td>Comm-Link tests via socketpair (5 tests)</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>Makefile</code></td><td>Build system for all targets</td><td>1</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>include/server.h</code> + <code>src/server.c</code></td><td>TCP server with select() event loop</td><td>2</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>src/main.c</code></td><td>Server entry point</td><td>2</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>include/server_mng.h</code> + <code>src/server_mng.c</code></td><td>Server user management (register/login/logout)</td><td>2</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>include/group_mng.h</code> + <code>src/group_mng.c</code></td><td>Group management + MC IP pool</td><td>2</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>src/client_main.c</code> + <code>include/client_net.h</code> + <code>src/client_net.c</code></td><td>Client main + TCP connect</td><td>3</td><td><span class="tag tag-done">Done</span></td></tr>
@@ -334,7 +336,7 @@ Screen 2 (Create/Join/Leave/Logout)    ├── Comm_Accept()
     <tr><td><code>include/client_groups_mng.h</code> + <code>src/client_groups_mng.c</code></td><td>Local group list mgmt (kill PIDs, free memory)</td><td>3</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>src/chat_sender.c</code></td><td>Multicast sender binary</td><td>4</td><td><span class="tag tag-done">Done</span></td></tr>
     <tr><td><code>src/chat_receiver.c</code></td><td>Multicast receiver binary</td><td>4</td><td><span class="tag tag-done">Done</span></td></tr>
-    <tr><td><code>tests/test_e2e.c</code></td><td>End-to-end server tests (6 tests)</td><td>2</td><td><span class="tag tag-done">Done</span></td></tr>
+    <tr><td><code>tests/test_e2e.c</code></td><td>End-to-end server tests (7 tests)</td><td>2</td><td><span class="tag tag-done">Done</span></td></tr>
   </table>
 </section>
 
@@ -376,18 +378,22 @@ make test_e2e</pre>
 <section id="run">
   <h2>Running</h2>
   <h3>Server</h3>
-  <pre><span class="comment"># Start server (default port 8888)</span>
-./server
+  <pre><span class="comment"># Build + start (default port 8888)</span>
+./start.sh
 
 <span class="comment"># Or with a custom port</span>
-./server 5000</pre>
+./start.sh 5000
+
+<span class="comment"># Manually:</span>
+make server
+./server 8888</pre>
 
   <h3>Client</h3>
-  <pre><span class="comment"># Connect to server on default port 8888</span>
+  <pre><span class="comment"># Connect to server on localhost (default port 8888)</span>
 ./client
 
-<span class="comment"># Connect to specific port</span>
-./client 8888</pre>
+<span class="comment"># Connect to specific server IP and port</span>
+./client 192.168.1.100 8888</pre>
 
   <h3>Full end-to-end</h3>
   <pre><span class="comment"># Terminal 1 — start server</span>
