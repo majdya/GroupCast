@@ -23,32 +23,56 @@
 /* ------------------------------------------------------------------ */
 
 #define TEST_PORT 18989
-#define POLL_MS   10
-#define POLL_MAX  200   /* 2 seconds total */
+#define POLL_MS 10
+#define POLL_MAX 200 /* 2 seconds total */
 
-static int   passed   = 0;
-static int   failed   = 0;
-static pid_t g_child  = 0;
+static int passed = 0;
+static int failed = 0;
+static pid_t g_child = 0;
 
-#define TEST(name)       do { printf("  %s ... ", name); } while (0)
-#define PASS()           do { printf("PASS\n"); passed++; } while (0)
-#define FAIL(msg)        do { printf("FAIL: %s\n", msg); failed++; } while (0)
-#define ASSERT(cond, m)  do { if (!(cond)) { FAIL(m); return; } } while (0)
+#define TEST(name)                 \
+    do                             \
+    {                              \
+        printf("  %s ... ", name); \
+    } while (0)
+#define PASS()            \
+    do                    \
+    {                     \
+        printf("PASS\n"); \
+        passed++;         \
+    } while (0)
+#define FAIL(msg)                  \
+    do                             \
+    {                              \
+        printf("FAIL: %s\n", msg); \
+        failed++;                  \
+    } while (0)
+#define ASSERT(cond, m) \
+    do                  \
+    {                   \
+        if (!(cond))    \
+        {               \
+            FAIL(m);    \
+            return;     \
+        }               \
+    } while (0)
 
 /* ------------------------------------------------------------------ */
 /*  Server lifecycle                                                   */
 /* ------------------------------------------------------------------ */
 
-static int start_server(const char* bin, uint16_t port)
+static int start_server(const char *bin, uint16_t port)
 {
     pid_t pid = fork();
-    if (pid < 0) return -1;
+    if (pid < 0)
+        return -1;
 
-    if (pid == 0) {
+    if (pid == 0)
+    {
         /* child — run server */
         char pbuf[16];
         snprintf(pbuf, sizeof(pbuf), "%u", port);
-        execlp(bin, bin, pbuf, (char*)NULL);
+        execlp(bin, bin, pbuf, (char *)NULL);
 
         /* if exec fails */
         fprintf(stderr, "exec %s failed: %s\n", bin, strerror(errno));
@@ -56,9 +80,11 @@ static int start_server(const char* bin, uint16_t port)
     }
 
     /* parent — wait until server is ready to accept */
-    for (int i = 0; i < POLL_MAX; i++) {
-        CommPeer* c = Comm_Connect("127.0.0.1", port);
-        if (c) {
+    for (int i = 0; i < POLL_MAX; i++)
+    {
+        CommPeer *c = Comm_Connect("127.0.0.1", port);
+        if (c)
+        {
             Comm_Close(c);
             return (int)pid;
         }
@@ -73,7 +99,8 @@ static int start_server(const char* bin, uint16_t port)
 
 static void stop_server(pid_t pid)
 {
-    if (pid <= 0) return;
+    if (pid <= 0)
+        return;
     kill(pid, SIGTERM);
     waitpid(pid, NULL, 0);
 }
@@ -82,11 +109,13 @@ static void stop_server(pid_t pid)
 /*  Helper: non-blocking recv with polling                             */
 /* ------------------------------------------------------------------ */
 
-static CommResult recv_msg(CommPeer* peer, uint8_t* type, void* buf, uint8_t* len)
+static CommResult recv_msg(CommPeer *peer, uint8_t *type, void *buf, uint8_t *len)
 {
-    for (int i = 0; i < POLL_MAX; i++) {
+    for (int i = 0; i < POLL_MAX; i++)
+    {
         CommResult r = Comm_TryRecv(peer, type, buf, len);
-        if (r != COMM_AGAIN) return r;
+        if (r != COMM_AGAIN)
+            return r;
         usleep(POLL_MS * 1000);
     }
     return COMM_AGAIN;
@@ -96,15 +125,15 @@ static CommResult recv_msg(CommPeer* peer, uint8_t* type, void* buf, uint8_t* le
 /*  Helper: send-request / recv-response with status check             */
 /* ------------------------------------------------------------------ */
 
-static void req_resp_status(CommPeer* peer,
-                            uint8_t  req_type,
-                            uint8_t  resp_type,
-                            const void* payload,
-                            uint8_t  plen,
-                            uint8_t  expected_status)
+static void req_resp_status(CommPeer *peer,
+                            uint8_t req_type,
+                            uint8_t resp_type,
+                            const void *payload,
+                            uint8_t plen,
+                            uint8_t expected_status)
 {
-    uint8_t  rbuf[TLV_MAX_PAYLOAD];
-    uint8_t  rtype, rlen;
+    uint8_t rbuf[TLV_MAX_PAYLOAD];
+    uint8_t rtype, rlen;
 
     ASSERT(Comm_Send(peer, req_type, payload, plen) == 0,
            "Comm_Send failed");
@@ -120,10 +149,10 @@ static void req_resp_status(CommPeer* peer,
 /*  Test scenarios                                                     */
 /* ------------------------------------------------------------------ */
 
-static void test_register_login(CommPeer* peer)
+static void test_register_login(CommPeer *peer)
 {
     uint8_t payload[TLV_MAX_PAYLOAD];
-    size_t  plen;
+    size_t plen;
 
     /* register alice */
     plen = Proto_PackUserPass(payload, "alice", "secret");
@@ -140,10 +169,10 @@ static void test_register_login(CommPeer* peer)
     PASS();
 }
 
-static void test_login_errors(CommPeer* peer)
+static void test_login_errors(CommPeer *peer)
 {
     uint8_t payload[TLV_MAX_PAYLOAD];
-    size_t  plen;
+    size_t plen;
 
     /* login wrong password */
     plen = Proto_PackUserPass(payload, "alice", "wrongpass");
@@ -156,10 +185,10 @@ static void test_login_errors(CommPeer* peer)
     PASS();
 }
 
-static void test_create_join_leave(CommPeer* peer)
+static void test_create_join_leave(CommPeer *peer)
 {
     uint8_t payload[TLV_MAX_PAYLOAD];
-    size_t  plen;
+    size_t plen;
 
     /* create group */
     plen = Proto_PackStr(payload, "devs");
@@ -181,7 +210,7 @@ static void test_create_join_leave(CommPeer* peer)
         ASSERT(cr == COMM_MSG_READY, "expected MSG_READY");
         ASSERT(rtype == JOIN_GROUP_RESP, "wrong type");
         uint8_t status;
-        char    addr[16];
+        char addr[16];
         uint16_t port;
         ASSERT(Proto_UnpackGroupResp(rbuf, rlen, &status, addr, sizeof(addr), &port) == 0,
                "unpack failed");
@@ -213,7 +242,7 @@ static void test_create_join_leave(CommPeer* peer)
     PASS();
 }
 
-static void test_logout(CommPeer* peer)
+static void test_logout(CommPeer *peer)
 {
     /* logout */
     req_resp_status(peer, LOGOUT_REQ, LOGOUT_RESP, NULL, 0, SUCCESS);
@@ -221,10 +250,10 @@ static void test_logout(CommPeer* peer)
     PASS();
 }
 
-static void test_requires_login(CommPeer* peer)
+static void test_requires_login(CommPeer *peer)
 {
     uint8_t payload[TLV_MAX_PAYLOAD];
-    size_t  plen;
+    size_t plen;
 
     /* must be logged in for group ops */
     plen = Proto_PackStr(payload, "anygroup");
@@ -243,10 +272,10 @@ static void test_multi_session(void)
     uint8_t payload[TLV_MAX_PAYLOAD];
     uint8_t rbuf[TLV_MAX_PAYLOAD];
     uint8_t rtype, rlen;
-    size_t  plen;
+    size_t plen;
 
     /* second client: register + login as bob */
-    CommPeer* bob = Comm_Connect("127.0.0.1", TEST_PORT);
+    CommPeer *bob = Comm_Connect("127.0.0.1", TEST_PORT);
     ASSERT(bob != NULL, "bob connect failed");
 
     plen = Proto_PackUserPass(payload, "bob", "bobpass");
@@ -266,7 +295,7 @@ static void test_multi_session(void)
     ASSERT(cr == COMM_MSG_READY, "expected MSG_READY");
     ASSERT(rtype == JOIN_GROUP_RESP, "wrong type");
     uint8_t status;
-    char    addr[16];
+    char addr[16];
     uint16_t port;
     ASSERT(Proto_UnpackGroupResp(rbuf, rlen, &status, addr, sizeof(addr), &port) == 0, "unpack");
     ASSERT(status == SUCCESS, "bob join failed");
@@ -280,24 +309,68 @@ static void test_multi_session(void)
     PASS();
 }
 
+static void test_failed_login_blocks_groups(void)
+{
+    uint8_t payload[TLV_MAX_PAYLOAD];
+    size_t plen;
+
+    /* Fresh connection — register a user */
+    CommPeer *p = Comm_Connect("127.0.0.1", TEST_PORT);
+    ASSERT(p != NULL, "connect failed");
+
+    plen = Proto_PackUserPass(payload, "loginfail", "pass");
+    req_resp_status(p, REGISTER_REQ, REGISTER_RESP, payload, (uint8_t)plen, SUCCESS);
+
+    /* Login with wrong password should fail */
+    plen = Proto_PackUserPass(payload, "loginfail", "wrongpass");
+    req_resp_status(p, LOGIN_REQ, LOGIN_RESP, payload, (uint8_t)plen, ERR_WRONG_PASSWORD);
+
+    /* Group op must still be rejected — not logged in */
+    plen = Proto_PackStr(payload, "anygroup");
+    req_resp_status(p, CREATE_GROUP_REQ, CREATE_GROUP_RESP,
+                    payload, (uint8_t)plen, ERR_GENERAL);
+
+    /* Login with non-existing user should fail */
+    plen = Proto_PackUserPass(payload, "ghost", "x");
+    req_resp_status(p, LOGIN_REQ, LOGIN_RESP, payload, (uint8_t)plen, ERR_USER_NOT_FOUND);
+
+    /* Group op must still be rejected */
+    plen = Proto_PackStr(payload, "anygroup2");
+    req_resp_status(p, JOIN_GROUP_REQ, JOIN_GROUP_RESP,
+                    payload, (uint8_t)plen, ERR_GENERAL);
+
+    /* Now login correctly — group ops should succeed */
+    plen = Proto_PackUserPass(payload, "loginfail", "pass");
+    req_resp_status(p, LOGIN_REQ, LOGIN_RESP, payload, (uint8_t)plen, SUCCESS);
+
+    plen = Proto_PackStr(payload, "testgroup");
+    req_resp_status(p, CREATE_GROUP_REQ, CREATE_GROUP_RESP,
+                    payload, (uint8_t)plen, SUCCESS);
+
+    Comm_Close(p);
+    PASS();
+}
+
 /* ------------------------------------------------------------------ */
 /*  Main                                                               */
 /* ------------------------------------------------------------------ */
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-    const char* server_bin = (argc > 1) ? argv[1] : "./server";
+    const char *server_bin = (argc > 1) ? argv[1] : "./server";
 
     printf("Starting server (binary: %s) on port %d ...\n", server_bin, TEST_PORT);
     g_child = start_server(server_bin, TEST_PORT);
-    if (g_child < 0) {
+    if (g_child < 0)
+    {
         fprintf(stderr, "FATAL: could not start server\n");
         return 1;
     }
     printf("  server pid = %d\n", g_child);
 
-    CommPeer* peer = Comm_Connect("127.0.0.1", TEST_PORT);
-    if (!peer) {
+    CommPeer *peer = Comm_Connect("127.0.0.1", TEST_PORT);
+    if (!peer)
+    {
         fprintf(stderr, "FATAL: could not connect to server\n");
         stop_server(g_child);
         return 1;
@@ -322,6 +395,9 @@ int main(int argc, char* argv[])
 
     printf("\ne2e — multi-session:\n");
     test_multi_session();
+
+    printf("\ne2e — failed login blocks groups:\n");
+    test_failed_login_blocks_groups();
 
     /* ---- cleanup ---- */
 
